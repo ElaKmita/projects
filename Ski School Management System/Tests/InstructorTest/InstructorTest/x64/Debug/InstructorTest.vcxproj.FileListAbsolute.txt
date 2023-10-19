@@ -1,0 +1,1 @@
+D:\GIT - priv\projects\Ski School Management System\Tests\InstructorTest\InstructorTest\x64\Debug\InstructorTest.vcxproj.CopyComplete

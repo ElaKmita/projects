@@ -1,0 +1,14 @@
+﻿  test.cpp
+  testAdv.cpp
+  Generating Code...
+testAdv.obj : error LNK2005: "private: static int Instructor::instructors" (?instructors@Instructor@@0HA) already defined in test.obj
+testAdv.obj : error LNK2005: "private: static int Instructor::PZNInstructors" (?PZNInstructors@Instructor@@0HA) already defined in test.obj
+testAdv.obj : error LNK2005: "private: void __cdecl Instructor::setPercent(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > &)" (?setPercent@Instructor@@AEAAXAEAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z) already defined in test.obj
+testAdv.obj : error LNK2005: "public: __cdecl Instructor::Instructor(void)" (??0Instructor@@QEAA@XZ) already defined in test.obj
+testAdv.obj : error LNK2005: "public: __cdecl Instructor::Instructor(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > &)" (??0Instructor@@QEAA@AEAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@000@Z) already defined in test.obj
+testAdv.obj : error LNK2005: "public: void __cdecl Instructor::displayData(void)" (?displayData@Instructor@@QEAAXXZ) already defined in test.obj
+testAdv.obj : error LNK2005: "public: void __cdecl Instructor::changeData(void)" (?changeData@Instructor@@QEAAXXZ) already defined in test.obj
+testAdv.obj : error LNK2005: "private: virtual void __cdecl InstructorTest_Constructors_Test::TestBody(void)" (?TestBody@InstructorTest_Constructors_Test@@EEAAXXZ) already defined in test.obj
+testAdv.obj : error LNK2005: main already defined in test.obj
+testAdv.obj : error LNK2005: "private: static class testing::TestInfo * InstructorTest_Constructors_Test::test_info_" (?test_info_@InstructorTest_Constructors_Test@@0QEAVTestInfo@testing@@EA) already defined in test.obj
+D:\GIT - priv\projects\Ski School Management System\Tests\InstructorTest\x64\Debug\InstructorTest.exe : fatal error LNK1169: one or more multiply defined symbols found
