@@ -30,6 +30,9 @@ std::string query;
 // functions' declarations
 void upperCase(std::string& str);
 void displayData(MYSQL_ROW& row);
+void modification(std::string colName, std::string newVal, int id);
+void instModificationMenu();
+
 
 /*
 ----------------------------------
@@ -51,19 +54,23 @@ private:
 
 	std::list<std::string> titles{"I", "AI SITN", "I SITN", "AI PZN", "I PZN"};		// list with all available titles 
 
-	void setPercent(std::string&);	// sets percent - depends on title
+	double setPercent(std::string&);	// sets percent - depends on title
 
 public:
 	void addInstructor();			// adds new instructor to the database
 	void displayAll();				// displays all instructors
 	void findInstructor();			// finds instructor in the database
+	void modifyData();				// modifies instructor's data
 	void deleteInstructor();		// deletes instructor from database
 };
 
+// additional functions' declarations
+
+void isInstrKnown(Instructor* instr);
 
 // Instructor - METHODS
 
-void Instructor::setPercent(std::string& _title)
+double Instructor::setPercent(std::string& _title)
 {
 	std::map<std::string, double> rateDict;		// dictionary with title-rate dependencies
 	rateDict["I"] = 0.4;			// Instructor after un
@@ -72,7 +79,7 @@ void Instructor::setPercent(std::string& _title)
 	rateDict["AI PZN"] = 0.55;		// Assistant Instructor PZN 
 	rateDict["I PZN"] = 0.6;		// Instructor PZN
 
-	percent = rateDict[_title];
+	return rateDict[_title];		// returns percent that depends on title
 }
 
 void Instructor::addInstructor()
@@ -95,7 +102,7 @@ void Instructor::addInstructor()
 		std::getline(cin, title);
 		upperCase(title);
 	}
-	setPercent(title);
+	percent = setPercent(title);
 
 	stmt.str("");	
 	stmt << "INSERT INTO instructor(name, surname, displayedName, title, percent) VALUES('" << name << "','" << surname << "','" << displayedName << "','" << title << "', " << percent << ");";
@@ -133,6 +140,7 @@ void Instructor::displayAll()
 		cout << "Salary:\t" << row[7] << endl;
 		*/
 	}
+	cout << endl;
 	/*
 	cout << "Id\t" << "Name\t\t" << "Surname\t\t" << "Displayed name\t" << "Title\t" << "h\t" << "PLN\t" << endl << endl;
 	while ((row = mysql_fetch_row(res_set)) != NULL)
@@ -146,7 +154,7 @@ void Instructor::displayAll()
 void Instructor::findInstructor()
 {
 	std::string searchData;
-	cout << "Enter search data (name or surname or displayed name): ";
+	cout << "\nEnter search data (name or surname or displayed name): ";
 	std::getline(cin, searchData);
 	stmt.str("");
 	stmt << "SELECT * FROM instructor WHERE name = '" << searchData << "' OR surname = '" << searchData << "' OR displayedName = '" << searchData << "';";
@@ -164,22 +172,26 @@ void Instructor::findInstructor()
 	cout << (match ? "\n" : "\nNo items match this data\n");
 }
 
-void Instructor::deleteInstructor()
+void Instructor::modifyData()
 {
 	char ans;
-	cout << "Removing instructor from the database\n\n";
+	cout << "\nModyfying instructor data\n\n";
+	/*
 	cout << "Do you know instructor id? (y/n) ";
 	cin >> ans;
 	if (ans == 'n')
 	{
 		char num;
-		cout << "1. Find instructor\n2. Display all\n\nChoose option: ";
+		cout << "\n1. Find instructor\n2. Display all\n\nChoose option: ";
 		cin >> num;
 		switch (num)
 		{
 		case '1':
+		{
+			cin.get();
 			findInstructor();
 			break;
+		}
 		case '2':
 			displayAll();
 			break;
@@ -191,6 +203,115 @@ void Instructor::deleteInstructor()
 		}
 		}
 	}
+	*/
+
+	isInstrKnown(this);
+	cout << endl << "Enter instructor id: ";
+	cin >> id;
+	instModificationMenu();
+	//cin >> ans;
+	std::string column, newValue;
+	while (cin >> ans)		// ans != '0'
+	{
+		switch (ans)
+		{
+		case '0':
+			break;
+		case '1':
+		{
+			cin.get();
+			column = "name";
+			cout << "Enter new name: ";
+			std::getline(cin, newValue);
+			modification(column, newValue, id);
+			break;
+		}
+		case '2':
+		{
+			cin.get();
+			column = "surname";
+			cout << "Enter new surname: ";
+			std::getline(cin, newValue);
+			modification(column, newValue, id);
+			break;
+		}
+		case '3':
+		{
+			cin.get();
+			column = "displayedName";
+			cout << "Enter new displayed name: ";
+			std::getline(cin, newValue);
+			modification(column, newValue, id);
+			break;
+		}
+		case '4':
+		{
+			cin.get();
+			column = "title";
+			cout << "Enter new title (I, AI SITN, I SITN, AI PZN, I PZN): ";
+			std::getline(cin, newValue);
+			upperCase(newValue);
+
+			while (newValue != "I" && newValue != "AI SITN" && newValue != "I SITN" && newValue != "AI PZN" && newValue != "I PZN")
+			{
+				cout << "Incorrect title \nChoose one of the given options\n";
+				cout << "Title (I, AI SITN, I SITN, AI PZN, I PZN): ";
+				std::getline(cin, newValue);
+				upperCase(newValue);
+			}
+			percent = setPercent(newValue);
+			modification(column, newValue, id);
+			modification("percent", std::to_string(percent), id);
+			break;
+		}
+		default:
+			cout << "Incorrect number\n\n";
+			break;
+		}
+
+		if (ans == '0')
+		{
+			cout << endl << endl;
+			break;
+		}
+
+		instModificationMenu();
+	}
+}
+
+void Instructor::deleteInstructor()
+{
+	char ans;
+	cout << "\nRemoving instructor from the database\n\n";
+	isInstrKnown(this);
+	/*
+	cout << "Do you know instructor id? (y/n) ";
+	cin >> ans;
+	if (ans == 'n')
+	{
+		char num;
+		cout << "\n1. Find instructor\n2. Display all\n\nChoose option: ";
+		cin >> num;
+		switch (num)
+		{
+		case '1':
+		{
+			cin.get();
+			findInstructor();
+			break;
+		}
+		case '2':
+			displayAll();
+			break;
+		default:
+		{
+			cout << "Incorrect number\n\n";
+			displayAll();
+			break;
+		}
+		}
+	}
+	*/
 	cout << endl << "Enter instructor id: ";
 	cin >> id;
 	cout << endl << "Are you sure that you want delete this instructor? (y/n) ";
@@ -211,7 +332,7 @@ void Instructor::deleteInstructor()
 	}
 	else 
 	{
-		cout << "Instructor has not been deleted\n";
+		cout << "\nInstructor has not been deleted\n";
 	}
 }
 
@@ -237,6 +358,65 @@ void displayData(MYSQL_ROW& row)
 	cout << "Salary:\t\t" << row[7] << endl;
 }
 
+void instModificationMenu()
+{
+	cout << endl << "- Data -\n";
+	cout << "1. Name" << endl;
+	cout << "2. Surname" << endl;
+	cout << "3. Displayed name" << endl;
+	cout << "4. Title" << endl;
+	cout << "0. END MODIFICATION";
+	cout << "\n\nChoose the data that you want modify (1-4), press 0 to escape: ";
+}
+
+
+void isInstrKnown(Instructor* instr)
+{
+	char ans;
+	cout << "Do you know instructor id? (y/n) ";
+	cin >> ans;
+	if (ans == 'n')
+	{
+		char num;
+		cout << "\n1. Find instructor\n2. Display all\n\nChoose option: ";
+		cin >> num;
+		switch (num)
+		{
+		case '1':
+		{
+			cin.get();
+			instr->findInstructor();
+			break;
+		}
+		case '2':
+			instr->displayAll();
+			break;
+		default:
+		{
+			cout << "Incorrect number\n\n";
+			instr->displayAll();
+			break;
+		}
+		}
+	}
+}
+
+
+void modification(std::string colName, std::string newVal, int id)
+{
+	stmt.str("");
+	stmt << "UPDATE instructor SET " << colName << " = '" << newVal << "' WHERE id = " << id << ";";
+	query = stmt.str();
+	q = query.c_str();
+	if (mysql_query(connection, q) == 0)			// mysql_query - sens query to the database
+	{
+		cout << endl << endl << "Modification Successfully Completed" << endl << endl << endl;
+	}
+	else {
+		cout << endl << endl << "ERROR !" << endl << "Contact Technical Team " << endl << endl << endl;
+	}
+}
+
 /*
 ----------------------------------
 MENU 
@@ -244,13 +424,15 @@ MENU
 */
 
 // MENU - Instructor
+
 void displayMenuInst()
 {
 	cout << "--- INSTRUCTOR MENU ---\n\n";
 	cout << "1. Add new instructor\n";
 	cout << "2. Display all instructors\n";
 	cout << "3. Find instructor\n";
-	cout << "4. Delete instructor\n";
+	cout << "4. Modify instructor's data\n";
+	cout << "5. Delete instructor\n";
 	cout << "0. EXIT\n\n";
 	cout << "Choose option: ";
 }
@@ -279,6 +461,9 @@ void instructorMenu(Instructor& instr)
 			instr.findInstructor();
 			break;
 		case '4':
+			instr.modifyData();
+			break;
+		case '5':
 			instr.deleteInstructor();
 			break;
 		default:
@@ -311,5 +496,6 @@ int main()
 	//i.displayAll();
 	//i.deleteInstructor();
 	//i.findInstructor();
+	//i.modifyData();
 }
 
