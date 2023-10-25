@@ -144,7 +144,18 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Instructor.cpp" />
+    <ClCompile Include="SkiLearner.cpp" />
     <ClCompile Include="SkiSchoolManagementSystem.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Instructor.h" />
+    <ClInclude Include="mysqlConnection.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="SkiLearner.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SkiSchoolManagementSystem.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
