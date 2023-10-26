@@ -1,7 +1,9 @@
 #pragma once
 
 #include <iostream>
-#include <list>
+#include <map>
+#include <sstream>
+#include <iomanip>
 
 class Instructor
 {
@@ -14,8 +16,6 @@ private:
 	double percent;					// depends on title 
 	int workedHours;				// worked hours 
 	int salary;						// depends on percent and amount of people that are taking lesson
-
-	// std::list<std::string> titles{ "I", "AI SITN", "I SITN", "AI PZN", "I PZN" };		// list with all available titles 
 
 	double setPercent(std::string&);	// sets percent - depends on title
 

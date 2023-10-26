@@ -147,12 +147,14 @@
     <ClCompile Include="Instructor.cpp" />
     <ClCompile Include="SkiLearner.cpp" />
     <ClCompile Include="SkiSchoolManagementSystem.cpp" />
+    <ClCompile Include="additionalFunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Instructor.h" />
     <ClInclude Include="mysqlConnection.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SkiLearner.h" />
+    <ClInclude Include="additionalFunctions.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SkiSchoolManagementSystem.rc" />

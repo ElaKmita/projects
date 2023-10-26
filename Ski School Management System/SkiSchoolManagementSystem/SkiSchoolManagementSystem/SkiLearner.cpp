@@ -1,18 +1,19 @@
-#include <iostream>
-#include <cstring>
-#include <sstream>
-#include <iomanip>
-
 #include "SkiLearner.h"
 #include "mysqlConnection.h"
+#include "additionalFunctions.h"
 
 using std::cout;
 using std::cin;
 using std::endl;
 
+// functions' declarations
 void displayIndividualViewSL(MYSQL_ROW& row);
 void displayTableViewSL();
 void isLearnerKnown(SkiLearner* skiLearner);
+void learnerModificationMenu();
+void modificationSL(std::string colName, std::string newVal, int id);
+
+// SkiLearner's methods
 
 void SkiLearner::setLevel()
 {
@@ -58,12 +59,17 @@ void SkiLearner::setSlope()
 
 void SkiLearner::addSkiLearner()
 {
-	cout << "\nEnter data\n";
+	system("CLS");
+	cout << "\n- Adding new ski learner -\n\n";
+	cout << "\nEnter data\n\n";
 	cout << "Name: ";
 	std::getline(cin, name);
+	capitalize(name);
 	cout << "Surname: ";
 	std::getline(cin, surname);
+	capitalize(surname);
 	cout << "Phone number: ";
+	/**/
 	while (cin >> phoneNumber && strlen(phoneNumber) != 9)
 	{
 		cout << "Incorrect number.\nProvide the correct phone number: ";
@@ -82,9 +88,12 @@ void SkiLearner::addSkiLearner()
 	{
 		cout << endl << endl << "New Ski Learner Inserted Successfully" << endl << endl << endl;
 	}
-	else {
+	else 
+	{
 		cout << endl << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl << endl;
 	}
+	cin.get();
+	pressToContinue();
 }
 
 void SkiLearner::displayAll()
@@ -94,8 +103,9 @@ void SkiLearner::displayAll()
 	mysql_query(connection, q);
 	res_set = mysql_store_result(connection);
 
+	system("CLS");
 	char ans;
-	cout << "\nDisplay views:\n";
+	cout << "\nDisplay views:\n\n";
 	cout << "1. Individual View\n2. Table View\n\n";
 	cout << "Select display view: ";
 	cin >> ans;
@@ -104,47 +114,36 @@ void SkiLearner::displayAll()
 	{
 	case '1':
 	{
+		system("CLS");
+		cin.get();
 		cout << "\n--- SKI LEARNERS ---\n";
 		while ((row = mysql_fetch_row(res_set)) != NULL)
 		{
 			displayIndividualViewSL(row);
 		}
+		pressToContinue();
 		break;
 	}
 	case '2':
+		system("CLS");
+		cin.get();
 		displayTableViewSL();
+		pressToContinue();
 		break;
 	default:
+		system("CLS");
+		cin.get();
 		displayTableViewSL();
+		pressToContinue();
 		break;
 	}
 	cout << endl;
-}
-
-void displayIndividualViewSL(MYSQL_ROW& row)			// displays ski learners' data in individual view
-{
-	cout << endl;
-	cout << "Id\t\t" << row[0] << endl;
-	cout << "Name:\t\t" << row[1] << " " << row[2] << endl;
-	cout << "Phone number:\t" << row[3] << endl;
-	cout << "Level:\t\t" << row[4] << endl;
-	cout << "Slope:\t\t" << row[5] << endl;
-	cout << "Lessons:\t" << row[6] << endl;
-}
-
-void displayTableViewSL()				// displays ski learners' data in table view
-{
-	cout << "\n\n\t" << std::setw(54) << "--- SKI LEARNERS --- \n\n";
-	cout << "\t" << std::left << std::setw(8) << "Id" << std::setw(15) << "Name" << std::setw(15) << "Surname" << std::setw(15) << "Phone Number" << std::setw(30) << "Level" << std::setw(15) << "Slope" << std::setw(8) << "Lessons" << endl << endl;
-	while ((row = mysql_fetch_row(res_set)) != NULL)
-	{
-		cout << "\t" << std::left << std::setw(8) << row[0] << std::setw(15) << row[1] << std::setw(15) << row[2] << std::setw(15) << row[3] << std::setw(30) << row[4] << std::setw(15) << row[5] << std::setw(8) << row[6];
-		cout << endl;
-	}
 }
 
 void SkiLearner::findSkiLearner()
 {
+	system("CLS");
+	cout << "\n- Searching for ski learner -\n\n";
 	std::string searchData;
 	cout << "\nEnter search data (name or surname or phone number): ";
 	std::getline(cin, searchData);
@@ -162,10 +161,92 @@ void SkiLearner::findSkiLearner()
 		displayIndividualViewSL(row);
 	}
 	cout << (match ? "\n" : "\nNo items match your search\n\n");
+	pressToContinue();
+}
+
+void SkiLearner::modifyData()
+{
+	system("CLS");
+	char ans;
+	cout << "\nModyfying ski learner's data\n\n";
+	isLearnerKnown(this);
+	cout << endl << "Enter learner id: ";
+	cin >> id;
+	learnerModificationMenu();
+	//cin >> ans;
+	std::string column, newValue;
+	while (cin >> ans)		// ans != '0'
+	{
+		switch (ans)
+		{
+		case '0':
+			break;
+		case '1':
+		{
+			cin.get();
+			column = "name";
+			cout << "Enter new name: ";
+			std::getline(cin, newValue);
+			modificationSL(column, newValue, id);
+			break;
+		}
+		case '2':
+		{
+			cin.get();
+			column = "surname";
+			cout << "Enter new surname: ";
+			std::getline(cin, newValue);
+			modificationSL(column, newValue, id);
+			break;
+		}
+		case '3':
+		{
+			cin.get();
+			column = "phoneNumber";
+			cout << "Enter phone number: ";
+			while (cin >> phoneNumber && strlen(phoneNumber) != 9)
+			{
+				cout << "Incorrect number.\nProvide the correct phone number: ";
+			}
+			modificationSL(column, phoneNumber, id);
+			break;
+		}
+		case '4':
+		{
+			cin.get();
+			column = "level";
+			cout << "\nSet new level\n";
+			setLevel();
+			modificationSL(column, level, id);
+			break;
+		}
+		case '5':
+		{
+			cin.get();
+			column = "slope";
+			cout << "\nSet new slope\n";
+			setSlope();
+			modificationSL(column, slope, id);
+			break;
+		}
+		default:
+			cout << "Incorrect number\n\n";
+			break;
+		}
+
+		if (ans == '0')
+		{
+			cout << endl << endl;
+			break;
+		}
+
+		learnerModificationMenu();
+	}
 }
 
 void SkiLearner::deleteSkiLerner()
 {
+	system("CLS");
 	char ans;
 	cout << "\nRemoving ski learner from the database\n\n";
 	isLearnerKnown(this);
@@ -191,6 +272,31 @@ void SkiLearner::deleteSkiLerner()
 	{
 		cout << "\nLearner has not been deleted\n\n";
 	}
+	pressToContinue();
+}
+
+// additional functions
+
+void displayIndividualViewSL(MYSQL_ROW& row)			// displays ski learners' data in individual view
+{
+	cout << endl;
+	cout << "Id\t\t" << row[0] << endl;
+	cout << "Name:\t\t" << row[1] << " " << row[2] << endl;
+	cout << "Phone number:\t" << row[3] << endl;
+	cout << "Level:\t\t" << row[4] << endl;
+	cout << "Slope:\t\t" << row[5] << endl;
+	cout << "Lessons:\t" << row[6] << endl;
+}
+
+void displayTableViewSL()				// displays ski learners' data in table view
+{
+	cout << "\n\n\t" << std::setw(54) << "--- SKI LEARNERS --- \n\n";
+	cout << "\t" << std::left << std::setw(8) << "Id" << std::setw(15) << "Name" << std::setw(15) << "Surname" << std::setw(15) << "Phone Number" << std::setw(30) << "Level" << std::setw(15) << "Slope" << std::setw(8) << "Lessons" << endl << endl;
+	while ((row = mysql_fetch_row(res_set)) != NULL)
+	{
+		cout << "\t" << std::left << std::setw(8) << row[0] << std::setw(15) << row[1] << std::setw(15) << row[2] << std::setw(15) << row[3] << std::setw(30) << row[4] << std::setw(15) << row[5] << std::setw(8) << row[6];
+		cout << endl;
+	}
 }
 
 void isLearnerKnown(SkiLearner* skiLearner)
@@ -198,6 +304,7 @@ void isLearnerKnown(SkiLearner* skiLearner)
 	char ans;
 	cout << "Do you know learner id? (y/n) ";
 	cin >> ans;
+	system("CLS");
 	if (ans == 'n')
 	{
 		char num;
@@ -223,3 +330,31 @@ void isLearnerKnown(SkiLearner* skiLearner)
 		}
 	}
 }
+
+void learnerModificationMenu()
+{
+	cout << endl << "- Data -\n";
+	cout << "1. Name" << endl;
+	cout << "2. Surname" << endl;
+	cout << "3. Phone Number" << endl;
+	cout << "4. Level" << endl;
+	cout << "5. Slope" << endl;
+	cout << "0. END MODIFICATION";
+	cout << "\n\nChoose the data that you want modify (1-5), press 0 to escape: ";
+}
+
+void modificationSL(std::string colName, std::string newVal, int id)
+{
+	stmt.str("");
+	stmt << "UPDATE ski_learner SET " << colName << " = '" << newVal << "' WHERE id = " << id << ";";
+	query = stmt.str();
+	q = query.c_str();
+	if (mysql_query(connection, q) == 0)			// mysql_query - sens query to the database
+	{
+		cout << endl << endl << "Modification Successfully Completed" << endl << endl << endl;
+	}
+	else {
+		cout << endl << endl << "ERROR !" << endl << "Contact Technical Team " << endl << endl << endl;
+	}
+}
+
