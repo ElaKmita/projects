@@ -24,6 +24,9 @@
     <ClCompile Include="SkiLearner.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="additionalFunctions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Instructor.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SkiLearner.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="additionalFunctions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

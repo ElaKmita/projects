@@ -1,8 +1,10 @@
 #pragma once
 
 #include <iostream>
-#include <map>
 #include <array>
+#include <cstring>
+#include <sstream>
+#include <iomanip>
 
 class SkiLearner
 {
@@ -21,10 +23,10 @@ private:
 	void setSlope();
 
 public:
-	void addSkiLearner();			// adds new instructor to the database
+	void addSkiLearner();			// adds new learner to the database
 	void displayAll();				// displays all ski learners
-	void findSkiLearner();				// finds instructor in the database
-	//void modifyData();				// modifies instructor's data
+	void findSkiLearner();			// finds learner in the database
+	void modifyData();				// modifies learner's data
 	void deleteSkiLerner();			// deletes learner from database
 };
 

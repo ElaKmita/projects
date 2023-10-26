@@ -3,8 +3,7 @@
 #include <mysql.h>
 #include <sstream>
 #include <conio.h>
-#include <list>
-#include <map>
+#include <cstdlib>
 
 #include "Instructor.h";
 #include "mysqlConnection.h"
@@ -13,7 +12,6 @@
 using std::cout;
 using std::cin;
 using std::endl;
-
 
 // Connection with MySQL - definition
 
@@ -32,11 +30,63 @@ MENU
 ----------------------------------
 */
 
+void instructorMenu(Instructor& instr);
+void learnerMenu(SkiLearner& skiLearner);
+
+// MENU 
+
+void displayMenuPeople()
+{
+	system("CLS");
+	cout << "\n--- LEARNERS & INSTRUCTORS HUB ---\n\n";
+	cout << "1. Instructors\n";
+	cout << "2. Ski learners\n";
+	cout << "0. EXIT\n\n";
+	cout << "Choose option: ";
+}
+
+void peopleMenu()
+{
+	char choice;
+	displayMenuPeople();
+
+	while (cin >> choice && choice != '0')
+	{
+		cin.get();
+		switch (choice)
+		{
+		case '0':
+			cout << "\n\nGoodbye!\n\n";
+			exit(0);
+			break;
+		case '1':
+		{
+			Instructor i;
+			instructorMenu(i);
+			break;
+		}
+		case '2':
+		{
+			SkiLearner sl;
+			learnerMenu(sl);
+			break;
+		}
+		default:
+			cout << "\nIncorrect choice.\nPlease select number from 0 to 5.\n\n";
+			break;
+		}
+
+		displayMenuPeople();
+	}
+}
+
+
 // MENU - Instructor
 
 void displayMenuInst()
 {
-	cout << "--- INSTRUCTOR MENU ---\n\n";
+	system("CLS");
+	cout << "\n--- INSTRUCTORS MENU ---\n\n";
 	cout << "1. Add new instructor\n";
 	cout << "2. Display all instructors\n";
 	cout << "3. Find instructor\n";
@@ -57,8 +107,6 @@ void instructorMenu(Instructor& instr)
 		switch (choice)
 		{
 		case '0':
-			cout << "Goodbye!\n\n";
-			exit(0);
 			break;
 		case '1':
 			instr.addInstructor();
@@ -84,11 +132,13 @@ void instructorMenu(Instructor& instr)
 	}
 }
 
+
 // MENU - Ski Learner
 
 void displayMenuSL()
 {
-	cout << "--- SKI LEARNER MENU ---\n\n";
+	system("CLS");
+	cout << "\n--- SKI LEARNERS MENU ---\n\n";
 	cout << "1. Add new learner\n";
 	cout << "2. Display all learners\n";
 	cout << "3. Find learner\n";
@@ -109,8 +159,6 @@ void learnerMenu(SkiLearner& skiLearner)
 		switch (choice)
 		{
 		case '0':
-			cout << "Goodbye!\n\n";
-			exit(0);
 			break;
 		case '1':
 			skiLearner.addSkiLearner();
@@ -122,14 +170,13 @@ void learnerMenu(SkiLearner& skiLearner)
 			skiLearner.findSkiLearner();
 			break;
 		case '4':
-			cout << "Not ready yet!";
-			//skiLearner.modifyData();
+			skiLearner.modifyData();
 			break;
 		case '5':
 			skiLearner.deleteSkiLerner();
 			break;
 		default:
-			cout << "\nIncorrect choice.\nPlease select number from 0 to 5.\n\n";
+			cout << "\nIncorrect choice.\nPlease select number from 0 to 5: \n\n";
 			break;
 		}
 
@@ -152,6 +199,7 @@ int main()
 	}
 	*/
 
+	peopleMenu();
 	//Instructor i;
 	//instructorMenu(i);
 	//i.addInstructor();
@@ -159,7 +207,7 @@ int main()
 	//i.deleteInstructor();
 	//i.findInstructor();
 	//i.modifyData();
-	SkiLearner s;
-	learnerMenu(s);
+	//SkiLearner s;
+	//learnerMenu(s);
 }
 

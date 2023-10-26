@@ -1,18 +1,12 @@
-#include <iostream>
-#include <map>
-#include <sstream>
-#include <iomanip>
-
 #include "Instructor.h"
 #include "mysqlConnection.h"
+#include "additionalFunctions.h"
 
 using std::cout;
 using std::cin;
 using std::endl;
 
 // functions' declarations
-
-void upperCase(std::string& str);
 void displayIndividualView(MYSQL_ROW& row);
 void displayTableView();
 void modification(std::string colName, std::string newVal, int id);
@@ -25,24 +19,29 @@ void isInstrKnown(Instructor* instr);
 double Instructor::setPercent(std::string& _title)
 {
 	std::map<std::string, double> rateDict;		// dictionary with title-rate dependencies
-	rateDict["I"] = 0.4;			// Instructor after un
-	rateDict["AI SITN"] = 0.45;		// Assistant Instructor SITN
-	rateDict["I SITN"] = 0.5;		// Instructor SITN
-	rateDict["AI PZN"] = 0.55;		// Assistant Instructor PZN 
-	rateDict["I PZN"] = 0.6;		// Instructor PZN
+	rateDict["I"] = 0.4;						// Instructor after course
+	rateDict["AI SITN"] = 0.45;					// Assistant Instructor SITN
+	rateDict["I SITN"] = 0.5;					// Instructor SITN
+	rateDict["AI PZN"] = 0.55;					// Assistant Instructor PZN 
+	rateDict["I PZN"] = 0.6;					// Instructor PZN
 
-	return rateDict[_title];		// returns percent that depends on title
+	return rateDict[_title];					// returns percent that depends on title
 }
 
 void Instructor::addInstructor()
 {
-	cout << "\nEnter data\n";
+	system("CLS");
+	cout << "\n- Adding new instructor -\n\n";
+	cout << "Enter data\n\n";
 	cout << "Name: ";
 	std::getline(cin, name);
+	capitalize(name);
 	cout << "Surname: ";
 	std::getline(cin, surname);
+	capitalize(surname);
 	cout << "Displayed name: ";
 	std::getline(cin, displayedName);
+	upperCase(displayedName);
 	cout << "Title (I, AI SITN, I SITN, AI PZN, I PZN): ";
 	std::getline(cin, title);
 	upperCase(title);
@@ -63,11 +62,12 @@ void Instructor::addInstructor()
 
 	if (mysql_query(connection, q) == 0)			// mysql_query - sends query to the database
 	{
-		cout << endl << endl << "New Instructor Inserted Successfully" << endl << endl << endl;
+		cout << endl << "New Instructor Inserted Successfully" << endl << endl;
 	}
 	else {
-		cout << endl << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl << endl;
+		cout << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl;
 	}
+	pressToContinue();
 }
 
 void Instructor::displayAll()
@@ -77,8 +77,9 @@ void Instructor::displayAll()
 	mysql_query(connection, q);
 	res_set = mysql_store_result(connection);
 
+	system("CLS");
 	char ans;
-	cout << "\nDisplay views:\n";
+	cout << "\nDisplay views:\n\n";
 	cout << "1. Individual View\n2. Table View\n\n";
 	cout << "Select display view: ";
 	cin >> ans;
@@ -87,25 +88,36 @@ void Instructor::displayAll()
 	{
 	case '1':
 	{
+		system("CLS");
+		cin.get();
 		cout << "\n--- INSTRUCTORS ---\n";
 		while ((row = mysql_fetch_row(res_set)) != NULL)
 		{
 			displayIndividualView(row);
 		}
+		pressToContinue();
 		break;
 	}
 	case '2':
+		system("CLS");
+		cin.get();
 		displayTableView();
+		pressToContinue();
 		break;
 	default:
+		system("CLS");
+		cin.get();
 		displayTableView();
+		pressToContinue();
 		break;
 	}
-	cout << endl;
+	// system("CLS");
 }
 
 void Instructor::findInstructor()
 {
+	system("CLS");
+	cout << "\n- Searching for instructor -\n\n";
 	std::string searchData;
 	cout << "\nEnter search data (name or surname or displayed name): ";
 	std::getline(cin, searchData);
@@ -123,17 +135,19 @@ void Instructor::findInstructor()
 		displayIndividualView(row);
 	}
 	cout << (match ? "\n" : "\nNo items match your search\n\n");
+	pressToContinue();
 }
 
 void Instructor::modifyData()
 {
+	system("CLS");
 	char ans;
-	cout << "\nModyfying instructor data\n\n";
+	cout << "\n- Modyfying instructor's data -\n\n";
 	isInstrKnown(this);
 	cout << endl << "Enter instructor id: ";
 	cin >> id;
+	system("CLS");
 	instModificationMenu();
-	//cin >> ans;
 	std::string column, newValue;
 	while (cin >> ans)		// ans != '0'
 	{
@@ -205,13 +219,15 @@ void Instructor::modifyData()
 
 void Instructor::deleteInstructor()
 {
+	system("CLS");
 	char ans;
-	cout << "\nRemoving instructor from the database\n\n";
+	cout << "\n- Removing instructor from the database -\n\n";
 	isInstrKnown(this);
 	cout << endl << "Enter instructor id: ";
 	cin >> id;
 	cout << endl << "Are you sure that you want delete this instructor? (y/n) ";
 	cin >> ans;
+	cin.get();
 	if (ans == 'y')
 	{
 		stmt.str("");
@@ -230,18 +246,10 @@ void Instructor::deleteInstructor()
 	{
 		cout << "\nInstructor has not been deleted\n\n";
 	}
+	pressToContinue();
 }
-
 
 // additional functions
-
-void upperCase(std::string& str)
-{
-	for (char& ch : str) {
-		if (std::islower(ch))
-			ch = std::toupper(ch);
-	}
-}
 
 void displayIndividualView(MYSQL_ROW& row)			// displays instructors' data in individual view
 {
@@ -281,6 +289,7 @@ void isInstrKnown(Instructor* instr)
 	char ans;
 	cout << "Do you know instructor id? (y/n) ";
 	cin >> ans;
+	system("CLS");
 	if (ans == 'n')
 	{
 		char num;
@@ -315,9 +324,12 @@ void modification(std::string colName, std::string newVal, int id)
 	q = query.c_str();
 	if (mysql_query(connection, q) == 0)			// mysql_query - sens query to the database
 	{
-		cout << endl << endl << "Modification Successfully Completed" << endl << endl << endl;
+		cout << endl << "Modification Successfully Completed" << endl << endl;
 	}
 	else {
-		cout << endl << endl << "ERROR !" << endl << "Contact Technical Team " << endl << endl << endl;
+		cout << endl << "ERROR !" << endl << "Contact Technical Team " << endl << endl;
 	}
+	pressToContinue();
+	system("CLS");
 }
+
