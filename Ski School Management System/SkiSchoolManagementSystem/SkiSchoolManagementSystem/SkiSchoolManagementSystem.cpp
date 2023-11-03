@@ -8,6 +8,7 @@
 #include "Instructor.h";
 #include "mysqlConnection.h"
 #include "SkiLearner.h"
+#include "additionalFunctions.h"	
 
 using std::cout;
 using std::cin;
@@ -92,6 +93,8 @@ void displayMenuInst()
 	cout << "3. Find instructor\n";
 	cout << "4. Modify instructor's data\n";
 	cout << "5. Delete instructor\n";
+	cout << "6. Check instructor's availability\n";
+	cout << "7. Change availability\n";
 	cout << "0. EXIT\n\n";
 	cout << "Choose option: ";
 }
@@ -123,8 +126,15 @@ void instructorMenu(Instructor& instr)
 		case '5':
 			instr.deleteInstructor();
 			break;
+		case '6':
+			instr.checkAvailability();
+			break;
+		case '7':
+			instr.changeAvailability();
+			break;
 		default:
 			cout << "\nIncorrect choice.\nPlease select number from 0 to 5.\n\n";
+			pressToContinue();
 			break;
 		}
 	
@@ -189,6 +199,7 @@ int main()
 	// connection initialization
 	connection = mysql_init(0);
 	connection = mysql_real_connect(connection, HOST, USER, PASS, DATABASE, PORT, NULL, 0);
+	mysql_set_server_option(connection, MYSQL_OPTION_MULTI_STATEMENTS_ON);		// enables sending more than one statemet to SQL 
 
 	/*
 	if (connection) {
@@ -209,5 +220,6 @@ int main()
 	//i.modifyData();
 	//SkiLearner s;
 	//learnerMenu(s);
+
 }
 

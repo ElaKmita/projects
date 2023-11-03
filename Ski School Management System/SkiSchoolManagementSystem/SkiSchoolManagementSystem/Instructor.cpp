@@ -12,7 +12,14 @@ void displayTableView();
 void modification(std::string colName, std::string newVal, int id);
 void instModificationMenu();
 void isInstrKnown(Instructor* instr);
-
+void initializeAvailability();
+void showAvailability(const int& id);
+void daysMenu();
+void hoursMenu();
+bool attendanceMenu();
+void weekChange(const int& id);
+void dayChange(const int& id);
+void hourChange(const int& id);
 
 // Instructor's methods
 
@@ -63,6 +70,7 @@ void Instructor::addInstructor()
 	if (mysql_query(connection, q) == 0)			// mysql_query - sends query to the database
 	{
 		cout << endl << "New Instructor Inserted Successfully" << endl << endl;
+		initializeAvailability();
 	}
 	else {
 		cout << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl;
@@ -161,6 +169,7 @@ void Instructor::modifyData()
 			column = "name";
 			cout << "Enter new name: ";
 			std::getline(cin, newValue);
+			capitalize(newValue);
 			modification(column, newValue, id);
 			break;
 		}
@@ -170,6 +179,7 @@ void Instructor::modifyData()
 			column = "surname";
 			cout << "Enter new surname: ";
 			std::getline(cin, newValue);
+			capitalize(newValue);
 			modification(column, newValue, id);
 			break;
 		}
@@ -179,6 +189,7 @@ void Instructor::modifyData()
 			column = "displayedName";
 			cout << "Enter new displayed name: ";
 			std::getline(cin, newValue);
+			upperCase(newValue);
 			modification(column, newValue, id);
 			break;
 		}
@@ -236,10 +247,11 @@ void Instructor::deleteInstructor()
 		q = query.c_str();
 		if (mysql_query(connection, q) == 0)			// mysql_query - sens query to the database
 		{
-			cout << endl << endl << "Instructor Deleted Successfully" << endl << endl << endl;
+			cout << endl << endl << "Instructor Deleted Successfully" << endl << endl;
 		}
-		else {
-			cout << endl << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl << endl;
+		else 
+		{
+			cout << endl << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl;
 		}
 	}
 	else
@@ -247,6 +259,51 @@ void Instructor::deleteInstructor()
 		cout << "\nInstructor has not been deleted\n\n";
 	}
 	pressToContinue();
+}
+
+void Instructor::checkAvailability()
+{
+	system("CLS");
+	cout << "\n- Checking instructor's availability -\n\n";
+	isInstrKnown(this);
+	cout << endl << "Enter instructor id: ";
+	cin >> id;
+	system("CLS");
+	cout << "\n- AVAILABILITY -\n";
+	showAvailability(id);
+	//pressToContinue();
+}
+
+void Instructor::changeAvailability()
+{
+	char ans;
+	char repetition = 'y';
+	system("CLS");
+	cout << "\n- Changing instructor's availability -\n\n";
+	isInstrKnown(this);
+	cout << endl << "Enter instructor id: ";
+	cin >> id;
+	system("CLS");
+	cout << "\n- AVAILABILITY CHANGE -\n\n";
+	while (repetition == 'y')
+	{
+		cout << "1. Change whole week\n2. Change whole day \n3. Change specific hour\n0. EXIT\n\n";
+		cin >> ans;
+		switch (ans)
+		{
+		case '0':
+			break;
+		case '1':
+			weekChange(id);
+			break;
+		case '2':
+			dayChange(id);
+			break;
+		case '3':
+			hourChange(id);
+			break;
+		}
+	}
 }
 
 // additional functions
@@ -333,3 +390,154 @@ void modification(std::string colName, std::string newVal, int id)
 	system("CLS");
 }
 
+void initializeAvailability()
+{
+	stmt.str("");
+	std::string query = "SELECT id FROM instructor ORDER BY id DESC LIMIT 1;";
+	q = query.c_str();
+	mysql_query(connection, q);
+	res_set = mysql_store_result(connection);
+
+	if ((row = mysql_fetch_row(res_set)) != NULL)
+	{
+		query = "";
+
+		for (std::string d : daysOfWeek)
+		{
+			stmt.str("");
+			stmt << "INSERT INTO availability (instructor_id, day) VALUES(" << row[0] << ", '" << d << "');";
+			query = query + stmt.str() + "\n";
+		}
+		q = query.c_str();
+
+		if (mysql_query(connection, q) == 0)			// mysql_query - sends query to the database
+		{
+			cout << endl << "Instructor's Availability Set Successfully" << endl << endl;
+		}
+		else {
+			cout << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl;
+		}
+	}
+	else
+		cout << "\nError occured while setting availability\n\n";
+}
+
+void showAvailability(const int& id)
+{
+	stmt.str("");
+	stmt << "SELECT displayedName FROM instructor WHERE id = " << id << ";";
+	query = stmt.str();
+	q = query.c_str();
+	mysql_query(connection, q);
+	res_set = mysql_store_result(connection);
+	if ((row = mysql_fetch_row(res_set)) != NULL)
+	{
+		cout << "\n\nInstructor: " << row[0] << "\n\n\n";
+
+		cout << std::left << std::setw(10) << "DAY" << std::setw(5) << "8AM" << std::setw(5) << "9AM" << std::setw(5) << "10AM" << std::setw(5) << "11AM" << std::setw(5) << "12PM" << std::setw(5) << "13PM" << std::setw(5) << "14PM" << std::setw(5) << "15PM" << endl << endl;
+		
+		for (std::string d : daysOfWeek)
+		{
+			stmt.str("");
+			stmt << "SELECT * FROM availability WHERE instructor_id = " << id << " AND day = '" << d << "';";
+			query = stmt.str();
+			q = query.c_str();
+			mysql_query(connection, q);
+			res_set = mysql_store_result(connection);
+
+			if ((row = mysql_fetch_row(res_set)) != NULL)
+			{
+				cout << std::left << std::setw(12) << d;
+				for (int i = 2; i <= 10; i++)
+					cout << std::setw(5) << row[i];
+				cout << endl;
+			}
+			else
+			{
+				cout << endl << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl;
+				break;
+			}
+		}
+	}
+	else
+	{
+		cout << "\n\nInstructor with this id doesn't exist.\n\n";
+	}
+	cin.get();
+	pressToContinue();
+}
+
+void daysMenu()
+{
+	cout << "Choose the day:\n\n";
+	int i = 1;
+	for (std::string d : daysOfWeek)
+	{
+		cout << i << ". " << d << endl;
+		i++;
+	}
+	cout << "0. EXIT" << endl << endl;
+}
+
+void hoursMenu()
+{
+	cout << "Choose the hour\n\n";
+	int i = 1;
+	for (std::string h : workingHours)
+	{
+		cout << i << ". " << h << endl;
+		i++;
+	}
+	cout << "0. EXIT" << endl << endl;
+}
+
+bool attendanceMenu()
+{
+	char ans;
+	cout << "Change to:\n\n";
+	cout << "1. Presence" << endl;
+	cout << "2. Absence" << endl << endl;
+	cout << "Enter the number: ";
+	while (cin >> ans)
+	{
+		if (ans == '1')
+			return 1;
+		else if (ans == '2')
+			return 0;
+		else
+			cinIgnore();
+		cout << "Enter the right number: ";
+	}
+}
+
+void weekChange(const int& id)
+{
+	bool attendance = attendanceMenu();
+	query = "";
+	stmt.str("");
+	for (std::string h : workingHours)
+	{
+		stmt.str("");
+		stmt << "UPDATE availability SET " << h << " = " << attendance << " WHERE instructor_id = " << id << ";";
+		query = query + stmt.str() + "\n";
+	}
+	q = query.c_str();
+
+	if (mysql_query(connection, q) == 0)			// mysql_query - sends query to the database
+	{
+		cout << endl << "Instructor's Availability Set Successfully" << endl << endl;
+	}
+	else {
+		cout << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl;
+	}
+}
+
+void dayChange(const int& id) 
+{
+	daysMenu();
+};
+
+void hourChange(const int& id) 
+{
+	hoursMenu();
+};
