@@ -144,13 +144,17 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Availability.cpp" />
     <ClCompile Include="Instructor.cpp" />
+    <ClCompile Include="Lesson.cpp" />
     <ClCompile Include="SkiLearner.cpp" />
     <ClCompile Include="SkiSchoolManagementSystem.cpp" />
     <ClCompile Include="additionalFunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Availability.h" />
     <ClInclude Include="Instructor.h" />
+    <ClInclude Include="Lesson.h" />
     <ClInclude Include="mysqlConnection.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SkiLearner.h" />

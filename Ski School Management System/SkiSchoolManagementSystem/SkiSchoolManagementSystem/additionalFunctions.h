@@ -2,6 +2,12 @@
 
 #include <iostream>
 #include <algorithm>
+#include <array>
+
+void cinIgnore();
+
+extern std::array<std::string, 7> daysOfWeek;
+extern std::array<std::string, 8> workingHours;
 
 inline void pressToContinue()
 {
