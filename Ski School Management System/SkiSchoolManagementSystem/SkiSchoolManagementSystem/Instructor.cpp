@@ -1,4 +1,4 @@
-#include "Instructor.h"
+﻿#include "Instructor.h"
 #include "mysqlConnection.h"
 #include "additionalFunctions.h"
 
@@ -14,9 +14,11 @@ void instModificationMenu();
 void isInstrKnown(Instructor* instr);
 void initializeAvailability();
 void showAvailability(const int& id);
-void daysMenu();
-void hoursMenu();
-bool attendanceMenu();
+//std::string daysMenu();
+//void hoursMenu();
+//bool attendanceMenu();
+void sendQuery(std::string successAnnouncement);
+void sendMultiQuery(std::string successAnnouncement);
 void weekChange(const int& id);
 void dayChange(const int& id);
 void hourChange(const int& id);
@@ -69,13 +71,12 @@ void Instructor::addInstructor()
 
 	if (mysql_query(connection, q) == 0)			// mysql_query - sends query to the database
 	{
-		cout << endl << "New Instructor Inserted Successfully" << endl << endl;
+		cout << endl << "New Instructor Inserted Successfully" << endl;
 		initializeAvailability();
 	}
 	else {
 		cout << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl;
 	}
-	pressToContinue();
 }
 
 void Instructor::displayAll()
@@ -276,17 +277,17 @@ void Instructor::checkAvailability()
 
 void Instructor::changeAvailability()
 {
-	char ans;
-	char repetition = 'y';
+	char ans = 1;
+	//char repetition = 'y';
 	system("CLS");
 	cout << "\n- Changing instructor's availability -\n\n";
 	isInstrKnown(this);
 	cout << endl << "Enter instructor id: ";
 	cin >> id;
-	system("CLS");
-	cout << "\n- AVAILABILITY CHANGE -\n\n";
-	while (repetition == 'y')
+	while (ans != '0')
 	{
+		system("CLS");
+		cout << "\n- AVAILABILITY CHANGE -\n\n";
 		cout << "1. Change whole week\n2. Change whole day \n3. Change specific hour\n0. EXIT\n\n";
 		cin >> ans;
 		switch (ans)
@@ -301,6 +302,9 @@ void Instructor::changeAvailability()
 			break;
 		case '3':
 			hourChange(id);
+			break;
+		default:
+			cout << "Incorrect choice";
 			break;
 		}
 	}
@@ -321,7 +325,7 @@ void displayIndividualView(MYSQL_ROW& row)			// displays instructors' data in in
 
 void displayTableView()				// displays instructors' data in table view
 {
-	cout << "\n\n\t" << std::setw(54) << "--- INSTRUCTORS--- \n\n";
+	cout << "\n\t\t\t\t\t" << "--- INSTRUCTORS--- \n\n";		// << std::setw(54)
 	cout << "\t" << std::left << std::setw(8) << "Id" << std::setw(20) << "Name" << std::setw(20) << "Surname" << std::setw(20) << "Displayed name" << std::setw(10) << "Title" << std::setw(8) << "h" << std::setw(8) << "PLN" << endl << endl;
 	while ((row = mysql_fetch_row(res_set)) != NULL)
 	{ 
@@ -379,15 +383,8 @@ void modification(std::string colName, std::string newVal, int id)
 	stmt << "UPDATE instructor SET " << colName << " = '" << newVal << "' WHERE id = " << id << ";";
 	query = stmt.str();
 	q = query.c_str();
-	if (mysql_query(connection, q) == 0)			// mysql_query - sens query to the database
-	{
-		cout << endl << "Modification Successfully Completed" << endl << endl;
-	}
-	else {
-		cout << endl << "ERROR !" << endl << "Contact Technical Team " << endl << endl;
-	}
-	pressToContinue();
-	system("CLS");
+
+	sendQuery("Modification Successfully Completed");
 }
 
 void initializeAvailability()
@@ -410,13 +407,7 @@ void initializeAvailability()
 		}
 		q = query.c_str();
 
-		if (mysql_query(connection, q) == 0)			// mysql_query - sends query to the database
-		{
-			cout << endl << "Instructor's Availability Set Successfully" << endl << endl;
-		}
-		else {
-			cout << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl;
-		}
+		sendMultiQuery("Instructor's Availability Set Successfully");
 	}
 	else
 		cout << "\nError occured while setting availability\n\n";
@@ -467,8 +458,9 @@ void showAvailability(const int& id)
 	pressToContinue();
 }
 
-void daysMenu()
+int daysMenu()
 {
+	system("CLS");
 	cout << "Choose the day:\n\n";
 	int i = 1;
 	for (std::string d : daysOfWeek)
@@ -477,10 +469,20 @@ void daysMenu()
 		i++;
 	}
 	cout << "0. EXIT" << endl << endl;
+	// funkcja z array i obsluga blednie wprowadzonych danych
+	int ans;
+	cout << "Choose your option: ";
+	cin >> ans;
+	// OBSŁUGA BŁĘDNIE WPROWADZONYCH DANYCH
+	if (ans >= 1 && ans <= daysOfWeek.size())
+		return ans;
+	else
+		return 0;
 }
 
-void hoursMenu()
+int hoursMenu()
 {
+	system("CLS");
 	cout << "Choose the hour\n\n";
 	int i = 1;
 	for (std::string h : workingHours)
@@ -489,11 +491,21 @@ void hoursMenu()
 		i++;
 	}
 	cout << "0. EXIT" << endl << endl;
+	// funkcja z array i obsluga blednie wprowadzonych danych
+	int ans;
+	cout << "Choose your option: ";
+	cin >> ans;
+	// OBSŁUGA BŁĘDNIE WPROWADZONYCH DANYCH
+	if (ans >= 1 && ans <= workingHours.size())
+		return ans;
+	else
+		return 0;
 }
 
 bool attendanceMenu()
 {
 	char ans;
+	system("CLS");
 	cout << "Change to:\n\n";
 	cout << "1. Presence" << endl;
 	cout << "2. Absence" << endl << endl;
@@ -505,8 +517,10 @@ bool attendanceMenu()
 		else if (ans == '2')
 			return 0;
 		else
-			cinIgnore();
-		cout << "Enter the right number: ";
+		{
+			cin.ignore();
+			cout << "Choose your option: ";
+		}
 	}
 }
 
@@ -514,7 +528,6 @@ void weekChange(const int& id)
 {
 	bool attendance = attendanceMenu();
 	query = "";
-	stmt.str("");
 	for (std::string h : workingHours)
 	{
 		stmt.str("");
@@ -523,21 +536,90 @@ void weekChange(const int& id)
 	}
 	q = query.c_str();
 
-	if (mysql_query(connection, q) == 0)			// mysql_query - sends query to the database
-	{
-		cout << endl << "Instructor's Availability Set Successfully" << endl << endl;
-	}
-	else {
-		cout << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl;
-	}
+	sendMultiQuery("Instructor's Availability Changed Successfully");
 }
 
 void dayChange(const int& id) 
 {
-	daysMenu();
+	bool attendance;
+	int choice = daysMenu();
+	if (choice != 0)
+	{
+		attendance = attendanceMenu();
+		query = "";
+		for (std::string h : workingHours)
+		{
+			stmt.str("");
+			stmt << "UPDATE availability SET " << h << " = " << attendance << " WHERE instructor_id = " << id << " AND day = '" << daysOfWeek[choice - 1] << "';";
+			query = query + stmt.str() + "\n";
+		}
+		q = query.c_str();
+
+		sendMultiQuery("Instructor's Availability Changed Successfully");
+	}
 };
 
 void hourChange(const int& id) 
 {
-	hoursMenu();
+	int choiceDay = daysMenu();
+	if (choiceDay != 0)
+	{	
+		char ans = 'y';
+		bool attendance;
+		while (ans == 'y')
+		{
+			int choiceHour = hoursMenu();
+			if (choiceHour != 0)
+			{
+				attendance = attendanceMenu();
+				query = "";
+				stmt.str("");
+				stmt << "UPDATE availability SET " << workingHours[choiceHour - 1] << " = " << attendance << " WHERE instructor_id = " << id << " AND day = '" << daysOfWeek[choiceDay - 1] << "';";
+				query = stmt.str();
+				q = query.c_str();
+
+				sendQuery("Instructor's Availability Changed Successfully");
+			}
+			cout << "Do you want to change another hour this day? (y/n) ";
+			cin >> ans;
+		}
+	}
 };
+
+// sendQuery - function that should be used when only one query is sent
+void sendQuery(std::string successAnnouncement)
+{
+	if (mysql_query(connection, q) == 0)			// mysql_query - sends query to the database
+	{
+		cout << endl << successAnnouncement << endl << endl;
+	}
+	else 
+	{
+		cout << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl;
+	}
+	cin.get();
+	pressToContinue();
+}
+
+// sendMuliQuery - function that should be used when more than one query is sent
+void sendMultiQuery(std::string successAnnouncement)
+{
+	if (mysql_query(connection, q) == 0) // mysql_query - sends query to the database
+	{
+		do {
+			/*
+			res_set = mysql_store_result(connection); // Get the result of the query
+			if (res_set) {
+				// Process the result
+				// ...
+				mysql_free_result(res_set); // Free the memory associated with the result
+			}
+			*/ 
+		} while (mysql_next_result(connection) == 0);
+		cout << endl << successAnnouncement << endl << endl;
+	}
+	else {
+		cout << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl;
+	}
+	pressToContinue();
+}
