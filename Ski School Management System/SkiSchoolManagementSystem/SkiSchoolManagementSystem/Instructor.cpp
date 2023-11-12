@@ -1,27 +1,8 @@
 ﻿#include "Instructor.h"
-#include "mysqlConnection.h"
-#include "additionalFunctions.h"
 
 using std::cout;
 using std::cin;
 using std::endl;
-
-// functions' declarations
-void displayIndividualView(MYSQL_ROW& row);
-void displayTableView();
-void modification(std::string colName, std::string newVal, int id);
-void instModificationMenu();
-void isInstrKnown(Instructor* instr);
-void initializeAvailability();
-void showAvailability(const int& id);
-//std::string daysMenu();
-//void hoursMenu();
-//bool attendanceMenu();
-void sendQuery(std::string successAnnouncement);
-void sendMultiQuery(std::string successAnnouncement);
-void weekChange(const int& id);
-void dayChange(const int& id);
-void hourChange(const int& id);
 
 // Instructor's methods
 
@@ -98,7 +79,6 @@ void Instructor::displayAll()
 	case '1':
 	{
 		system("CLS");
-		cin.get();
 		cout << "\n--- INSTRUCTORS ---\n";
 		while ((row = mysql_fetch_row(res_set)) != NULL)
 		{
@@ -109,18 +89,15 @@ void Instructor::displayAll()
 	}
 	case '2':
 		system("CLS");
-		cin.get();
 		displayTableView();
 		pressToContinue();
 		break;
 	default:
 		system("CLS");
-		cin.get();
 		displayTableView();
 		pressToContinue();
 		break;
 	}
-	// system("CLS");
 }
 
 void Instructor::findInstructor()
@@ -225,6 +202,7 @@ void Instructor::modifyData()
 			break;
 		}
 
+		system("CLS");
 		instModificationMenu();
 	}
 }
@@ -240,20 +218,14 @@ void Instructor::deleteInstructor()
 	cout << endl << "Are you sure that you want delete this instructor? (y/n) ";
 	cin >> ans;
 	cin.get();
-	if (ans == 'y')
+	if (ans == 'y' || ans == 'Y')
 	{
 		stmt.str("");
 		stmt << "DELETE FROM instructor WHERE id = " << id << ";";
 		query = stmt.str();
 		q = query.c_str();
-		if (mysql_query(connection, q) == 0)			// mysql_query - sens query to the database
-		{
-			cout << endl << endl << "Instructor Deleted Successfully" << endl << endl;
-		}
-		else 
-		{
-			cout << endl << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl;
-		}
+		sendQuery("Instructor Deleted Successfully");
+		deleteAvailability(id);
 	}
 	else
 	{
@@ -310,6 +282,7 @@ void Instructor::changeAvailability()
 	}
 }
 
+
 // additional functions
 
 void displayIndividualView(MYSQL_ROW& row)			// displays instructors' data in individual view
@@ -351,7 +324,7 @@ void isInstrKnown(Instructor* instr)
 	cout << "Do you know instructor id? (y/n) ";
 	cin >> ans;
 	system("CLS");
-	if (ans == 'n')
+	if (ans == 'n' || ans == 'N')
 	{
 		char num;
 		cout << "\n1. Find instructor\n2. Display all\n\nChoose option: ";
@@ -385,6 +358,7 @@ void modification(std::string colName, std::string newVal, int id)
 	q = query.c_str();
 
 	sendQuery("Modification Successfully Completed");
+	pressToContinue();
 }
 
 void initializeAvailability()
@@ -411,6 +385,15 @@ void initializeAvailability()
 	}
 	else
 		cout << "\nError occured while setting availability\n\n";
+}
+
+void deleteAvailability(const int& id)
+{
+	stmt.str("");
+	stmt << "DELETE FROM availability WHERE instructor_id = " << id << ";";
+	query = stmt.str();
+	q = query.c_str();
+	sendQuery("Instructor's Availability Deleted Successfully");
 }
 
 void showAvailability(const int& id)
@@ -458,7 +441,7 @@ void showAvailability(const int& id)
 	pressToContinue();
 }
 
-int daysMenu()
+int daysMenu()		// returns value from the menu (counting from 1) 
 {
 	system("CLS");
 	cout << "Choose the day:\n\n";
@@ -586,6 +569,7 @@ void hourChange(const int& id)
 	}
 };
 
+/*
 // sendQuery - function that should be used when only one query is sent
 void sendQuery(std::string successAnnouncement)
 {
@@ -597,8 +581,6 @@ void sendQuery(std::string successAnnouncement)
 	{
 		cout << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl;
 	}
-	cin.get();
-	pressToContinue();
 }
 
 // sendMuliQuery - function that should be used when more than one query is sent
@@ -607,14 +589,6 @@ void sendMultiQuery(std::string successAnnouncement)
 	if (mysql_query(connection, q) == 0) // mysql_query - sends query to the database
 	{
 		do {
-			/*
-			res_set = mysql_store_result(connection); // Get the result of the query
-			if (res_set) {
-				// Process the result
-				// ...
-				mysql_free_result(res_set); // Free the memory associated with the result
-			}
-			*/ 
 		} while (mysql_next_result(connection) == 0);
 		cout << endl << successAnnouncement << endl << endl;
 	}
@@ -623,3 +597,5 @@ void sendMultiQuery(std::string successAnnouncement)
 	}
 	pressToContinue();
 }
+
+*/

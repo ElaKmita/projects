@@ -1,5 +1,44 @@
 #include "additionalFunctions.h"
 
+void sendQuery(std::string successAnnouncement)
+{
+	if (mysql_query(connection, q) == 0)			// mysql_query - sends query to the database
+	{
+		cout << endl << successAnnouncement << endl << endl;
+	}
+	else
+	{
+		cout << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl;
+	}
+}
+
+void sendQuery(std::string successAnnouncement, bool& isTrue)
+{
+	if (mysql_query(connection, q) == 0)			// mysql_query - sends query to the database
+	{
+		cout << endl << successAnnouncement << endl << endl;
+		isTrue = true;
+	}
+	else
+	{
+		cout << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl;
+		isTrue = false;
+	}
+}
+
+void sendMultiQuery(std::string successAnnouncement)
+{
+	if (mysql_query(connection, q) == 0) // mysql_query - sends query to the database
+	{
+		do {
+		} while (mysql_next_result(connection) == 0);
+		cout << endl << successAnnouncement << endl << endl;
+	}
+	else {
+		cout << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl;
+	}
+}
+
 void cinIgnore() {
 
 #pragma push_macro("max")

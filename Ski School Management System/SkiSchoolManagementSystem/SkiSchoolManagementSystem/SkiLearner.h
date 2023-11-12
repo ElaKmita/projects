@@ -6,6 +6,9 @@
 #include <sstream>
 #include <iomanip>
 
+#include "mysqlConnection.h"
+#include "additionalFunctions.h"
+
 class SkiLearner
 {
 private:
@@ -30,3 +33,11 @@ public:
 	void deleteSkiLerner();			// deletes learner from database
 };
 
+
+// functions' declarations
+void displayIndividualViewSL(MYSQL_ROW& row);
+void displayTableViewSL();
+void isLearnerKnown(SkiLearner* skiLearner);
+void learnerModificationMenu();
+void modificationSL(std::string colName, std::string newVal, int id);
+int checkifSkiLearnerExist(const int& skiLearnerId);
