@@ -5,6 +5,9 @@
 #include <sstream>
 #include <iomanip>
 
+#include "mysqlConnection.h"
+#include "additionalFunctions.h"
+
 class Instructor
 {
 private:
@@ -31,3 +34,17 @@ public:
 	//void resetAvailability();
 };
 
+// functions' declarations
+void displayIndividualView(MYSQL_ROW& row);
+void displayTableView();
+void modification(std::string colName, std::string newVal, int id);
+void instModificationMenu();
+void isInstrKnown(Instructor* instr);
+void initializeAvailability();
+void deleteAvailability(const int& id);
+void showAvailability(const int& id);
+void sendQuery(std::string successAnnouncement);
+void sendMultiQuery(std::string successAnnouncement);
+void weekChange(const int& id);
+void dayChange(const int& id);
+void hourChange(const int& id);

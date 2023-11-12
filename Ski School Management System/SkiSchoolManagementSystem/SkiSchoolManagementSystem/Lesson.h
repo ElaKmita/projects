@@ -1,6 +1,12 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
+#include <iomanip>
+
+#include "mysqlConnection.h"
+#include "additionalFunctions.h"
+#include "SkiLearner.h"
 
 class Lesson
 {
@@ -8,19 +14,22 @@ private:
 	int id;
 	int skiLearnerId;		// only one learner's data is needed to book a lesson (even if it's a group lesson)
 	int learnersNum;		// number of learners
-	int hoursNum;
+	int hoursNum;			// number of hours
 	int instructorId;
-	int price;				
+	int price;				// price is returned by getPrice() function
 	int getPrice(int learners, int hours);		// returns price for hour for one person - price depends on number of learners and number of hours		
 	std::string day;
-	int hour;
+	std::string hour;
+
 public:
-	//addLesson();
+	void addLesson();
+	void findLesson();
+	void displayAllLessons();
 };
 
-
-
-/*
-SELECT * FROM skischool.instructor
-LEFT JOIN skischool.availability ON instructor.id = availability.instructor_id;
-*/
+// functions' declarations
+int chooseDay();
+int chooseHour(int hoursNum);
+int checkifSkiLearnerExist(const int& skiLearnerId);
+void findAvailableInst(const std::string& day, const int& hourIndex, const int& hoursNum, std::vector<int>& resultsList, std::vector<std::string>& nameList);
+void updateData(const int& instructorId, const int& skiLearnerId, const std::string& day, const int& hourIdx, const int& hoursNum, const int& price);

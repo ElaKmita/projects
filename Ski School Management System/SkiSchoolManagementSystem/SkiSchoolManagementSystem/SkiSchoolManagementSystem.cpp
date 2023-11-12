@@ -9,6 +9,7 @@
 #include "mysqlConnection.h"
 #include "SkiLearner.h"
 #include "additionalFunctions.h"	
+#include "Lesson.h";
 
 using std::cout;
 using std::cin;
@@ -33,15 +34,17 @@ MENU
 
 void instructorMenu(Instructor& instr);
 void learnerMenu(SkiLearner& skiLearner);
+void lessonMenu(Lesson& lesson);
 
 // MENU 
 
-void displayMenuPeople()
+void displayMainMenu()
 {
 	system("CLS");
-	cout << "\n--- LEARNERS & INSTRUCTORS HUB ---\n\n";
-	cout << "1. Instructors\n";
-	cout << "2. Ski learners\n";
+	cout << "\n--- MAIN MENU ---\n\n";
+	cout << "1. Lessons\n";
+	cout << "2. Instructors\n";
+	cout << "3. Ski learners\n";
 	cout << "0. EXIT\n\n";
 	cout << "Choose option: ";
 }
@@ -49,7 +52,7 @@ void displayMenuPeople()
 void peopleMenu()
 {
 	char choice;
-	displayMenuPeople();
+	displayMainMenu();
 
 	while (cin >> choice && choice != '0')
 	{
@@ -62,11 +65,17 @@ void peopleMenu()
 			break;
 		case '1':
 		{
+			Lesson l;
+			lessonMenu(l);
+			break;
+		}
+		case '2':
+		{
 			Instructor i;
 			instructorMenu(i);
 			break;
 		}
-		case '2':
+		case '3':
 		{
 			SkiLearner sl;
 			learnerMenu(sl);
@@ -77,10 +86,52 @@ void peopleMenu()
 			break;
 		}
 
-		displayMenuPeople();
+		displayMainMenu();
 	}
 }
 
+
+// MENU - Lesson
+
+void displayMenuLesson()
+{
+	system("CLS");
+	cout << "\n--- LESSONS MENU ---\n\n";
+	cout << "1. Add new lesson\n";
+	cout << "2. Find lesson\n";
+	cout << "3. Display all lessons\n";
+	cout << "0. EXIT\n\n";
+	cout << "Choose option: ";
+}
+
+void lessonMenu(Lesson& lesson)
+{
+	char choice;
+	displayMenuLesson();
+
+	while (cin >> choice && choice != '0')
+	{
+		cin.get();
+		switch (choice)
+		{
+		case '0':
+			break;
+		case '1':
+			lesson.addLesson();
+			break;
+		case '2':
+			//lesson.findLesson();
+			break;
+		case '3':
+			//lesson.displayAllLessons();
+			break;
+		default:
+			cout << "\nIncorrect choice.\nPlease select number from 0 to 3: \n\n";
+			break;
+		}
+		displayMenuLesson();
+	}
+}
 
 // MENU - Instructor
 
@@ -194,6 +245,7 @@ void learnerMenu(SkiLearner& skiLearner)
 	}
 }
 
+
 int main()
 {
 	// connection initialization
@@ -221,5 +273,7 @@ int main()
 	//SkiLearner s;
 	//learnerMenu(s);
 
+	//Lesson l;
+	//l.addLesson();
 }
 

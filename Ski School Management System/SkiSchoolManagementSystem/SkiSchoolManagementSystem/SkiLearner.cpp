@@ -1,17 +1,9 @@
 #include "SkiLearner.h"
-#include "mysqlConnection.h"
-#include "additionalFunctions.h"
 
 using std::cout;
 using std::cin;
 using std::endl;
 
-// functions' declarations
-void displayIndividualViewSL(MYSQL_ROW& row);
-void displayTableViewSL();
-void isLearnerKnown(SkiLearner* skiLearner);
-void learnerModificationMenu();
-void modificationSL(std::string colName, std::string newVal, int id);
 
 // SkiLearner's methods
 
@@ -172,76 +164,84 @@ void SkiLearner::modifyData()
 	isLearnerKnown(this);
 	cout << endl << "Enter learner id: ";
 	cin >> id;
-	learnerModificationMenu();
-	//cin >> ans;
-	std::string column, newValue;
-	while (cin >> ans)		// ans != '0'
+	if (checkifSkiLearnerExist(id))
 	{
-		switch (ans)
-		{
-		case '0':
-			break;
-		case '1':
-		{
-			cin.get();
-			column = "name";
-			cout << "Enter new name: ";
-			std::getline(cin, newValue);
-			modificationSL(column, newValue, id);
-			break;
-		}
-		case '2':
-		{
-			cin.get();
-			column = "surname";
-			cout << "Enter new surname: ";
-			std::getline(cin, newValue);
-			modificationSL(column, newValue, id);
-			break;
-		}
-		case '3':
-		{
-			cin.get();
-			column = "phoneNumber";
-			cout << "Enter phone number: ";
-			while (cin >> phoneNumber && strlen(phoneNumber) != 9)
-			{
-				cout << "Incorrect number.\nProvide the correct phone number: ";
-			}
-			modificationSL(column, phoneNumber, id);
-			break;
-		}
-		case '4':
-		{
-			cin.get();
-			column = "level";
-			cout << "\nSet new level\n";
-			setLevel();
-			modificationSL(column, level, id);
-			break;
-		}
-		case '5':
-		{
-			cin.get();
-			column = "slope";
-			cout << "\nSet new slope\n";
-			setSlope();
-			modificationSL(column, slope, id);
-			break;
-		}
-		default:
-			cout << "Incorrect number\n\n";
-			break;
-		}
-
-		if (ans == '0')
-		{
-			cout << endl << endl;
-			break;
-		}
-
 		learnerModificationMenu();
+		//cin >> ans;
+		std::string column, newValue;
+		while (cin >> ans)		// ans != '0'
+		{
+			switch (ans)
+			{
+			case '0':
+				break;
+			case '1':
+			{
+				cin.get();
+				column = "name";
+				cout << "Enter new name: ";
+				std::getline(cin, newValue);
+				modificationSL(column, newValue, id);
+				break;
+			}
+			case '2':
+			{
+				cin.get();
+				column = "surname";
+				cout << "Enter new surname: ";
+				std::getline(cin, newValue);
+				modificationSL(column, newValue, id);
+				break;
+			}
+			case '3':
+			{
+				cin.get();
+				column = "phoneNumber";
+				cout << "Enter phone number: ";
+				while (cin >> phoneNumber && strlen(phoneNumber) != 9)
+				{
+					cout << "Incorrect number.\nProvide the correct phone number: ";
+				}
+				modificationSL(column, phoneNumber, id);
+				break;
+			}
+			case '4':
+			{
+				cin.get();
+				column = "level";
+				cout << "\nSet new level\n";
+				setLevel();
+				modificationSL(column, level, id);
+				break;
+			}
+			case '5':
+			{
+				cin.get();
+				column = "slope";
+				cout << "\nSet new slope\n";
+				setSlope();
+				modificationSL(column, slope, id);
+				break;
+			}
+			default:
+				cout << "Incorrect number\n\n";
+				break;
+			}
+
+			if (ans == '0')
+			{
+				cout << endl << endl;
+				break;
+			}
+
+			learnerModificationMenu();
+		}
 	}
+	else
+		cout << "\n\nLearner doesn't exist!\n\n";
+
+	cin.get();
+	pressToContinue();
 }
 
 void SkiLearner::deleteSkiLerner()
@@ -252,28 +252,36 @@ void SkiLearner::deleteSkiLerner()
 	isLearnerKnown(this);
 	cout << endl << "Enter learner id: ";
 	cin >> id;
-	cout << endl << "Are you sure that you want delete this learner? (y/n) ";
-	cin >> ans;
-	if (ans == 'y')
+	if (checkifSkiLearnerExist(id))
 	{
-		stmt.str("");
-		stmt << "DELETE FROM ski_learner WHERE id = " << id << ";";
-		query = stmt.str();
-		q = query.c_str();
-		if (mysql_query(connection, q) == 0)			// mysql_query - sens query to the database
+		cout << endl << "Are you sure that you want delete this learner? (y/n) ";
+		cin >> ans;
+		if (ans == 'y' || ans == 'Y')
 		{
-			cout << endl << endl << "Learner Deleted Successfully" << endl << endl << endl;
+			stmt.str("");
+			stmt << "DELETE FROM ski_learner WHERE id = " << id << ";";
+			query = stmt.str();
+			q = query.c_str();
+			if (mysql_query(connection, q) == 0)			// mysql_query - sens query to the database
+			{
+				cout << endl << endl << "Learner Deleted Successfully" << endl << endl << endl;
+			}
+			else {
+				cout << endl << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl << endl;
+			}
 		}
-		else {
-			cout << endl << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl << endl;
+		else
+		{
+			cout << "\nLearner has not been deleted\n\n";
 		}
 	}
 	else
-	{
-		cout << "\nLearner has not been deleted\n\n";
-	}
+		cout << "\n\nLearner doesn't exist!\n\n";
+
+	cin.get();
 	pressToContinue();
 }
+
 
 // additional functions
 
@@ -290,7 +298,7 @@ void displayIndividualViewSL(MYSQL_ROW& row)			// displays ski learners' data in
 
 void displayTableViewSL()				// displays ski learners' data in table view
 {
-	cout << "\n\n\t" << std::setw(54) << "--- SKI LEARNERS --- \n\n";
+	cout << "\n\n\t\t\t" << "--- SKI LEARNERS --- \n\n";
 	cout << "\t" << std::left << std::setw(8) << "Id" << std::setw(15) << "Name" << std::setw(15) << "Surname" << std::setw(15) << "Phone Number" << std::setw(30) << "Level" << std::setw(15) << "Slope" << std::setw(8) << "Lessons" << endl << endl;
 	while ((row = mysql_fetch_row(res_set)) != NULL)
 	{
@@ -358,3 +366,16 @@ void modificationSL(std::string colName, std::string newVal, int id)
 	}
 }
 
+int checkifSkiLearnerExist(const int& skiLearnerId)
+{
+	stmt.str("");
+	stmt << "SELECT COUNT(*) FROM ski_learner WHERE id = " << skiLearnerId << ";";
+	query = stmt.str();
+	q = query.c_str();				// convert to const char *
+	mysql_query(connection, q);
+	res_set = mysql_store_result(connection);
+	if ((row = mysql_fetch_row(res_set)) != NULL)
+	{
+		return std::stoi(row[0]);;		// returns 0 if instructor doesn't exist or one if instructor exists
+	}
+}
