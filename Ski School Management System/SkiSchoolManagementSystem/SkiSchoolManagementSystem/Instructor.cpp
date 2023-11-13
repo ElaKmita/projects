@@ -62,7 +62,7 @@ void Instructor::addInstructor()
 
 void Instructor::displayAll()
 {
-	std::string query = "SELECT * FROM instructor;";
+	query = "SELECT * FROM instructor;";
 	q = query.c_str();
 	mysql_query(connection, q);
 	res_set = mysql_store_result(connection);

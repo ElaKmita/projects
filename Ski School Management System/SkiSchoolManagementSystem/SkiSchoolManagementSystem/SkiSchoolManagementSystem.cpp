@@ -10,6 +10,7 @@
 #include "SkiLearner.h"
 #include "additionalFunctions.h"	
 #include "Lesson.h";
+#include "additionalOptions.h"
 
 using std::cout;
 using std::cin;
@@ -35,6 +36,7 @@ MENU
 void instructorMenu(Instructor& instr);
 void learnerMenu(SkiLearner& skiLearner);
 void lessonMenu(Lesson& lesson);
+void AdditionalOptionsMenu();
 
 // MENU 
 
@@ -45,11 +47,12 @@ void displayMainMenu()
 	cout << "1. Lessons\n";
 	cout << "2. Instructors\n";
 	cout << "3. Ski learners\n";
+	cout << "4. Additional options\n";
 	cout << "0. EXIT\n\n";
 	cout << "Choose option: ";
 }
 
-void peopleMenu()
+void mainMenu()
 {
 	char choice;
 	displayMainMenu();
@@ -79,6 +82,11 @@ void peopleMenu()
 		{
 			SkiLearner sl;
 			learnerMenu(sl);
+			break;
+		}
+		case '4':
+		{
+			AdditionalOptionsMenu();
 			break;
 		}
 		default:
@@ -245,6 +253,43 @@ void learnerMenu(SkiLearner& skiLearner)
 	}
 }
 
+// MENU - Additional Options
+
+void displayMenuAO()		// displays menu of additional options
+{
+	system("CLS");
+	cout << "\n--- ADDITIONAL OPTIONS MENU ---\n\n";
+	cout << "1. Reset week\n";
+	cout << "2. Instructor's payment\n";
+	cout << "0. EXIT\n\n";
+	cout << "Choose option: ";
+}
+
+void AdditionalOptionsMenu()
+{
+	char choice;
+	displayMenuAO();
+
+	while (cin >> choice && choice != '0')
+	{
+		cin.get();
+		switch (choice)
+		{
+		case '0':
+			break;
+		case '1':
+			resetWeek();			// reset all lessons and set instructor's availability to presence for the whole week
+			break;
+		case '2':
+			payment();
+			break;
+		default:
+			cout << "\nIncorrect choice.\nPlease select number from 0 to 3: \n\n";
+			break;
+		}
+		displayMenuAO();
+	}
+}
 
 int main()
 {
@@ -262,7 +307,7 @@ int main()
 	}
 	*/
 
-	peopleMenu();
+	mainMenu();
 	//Instructor i;
 	//instructorMenu(i);
 	//i.addInstructor();

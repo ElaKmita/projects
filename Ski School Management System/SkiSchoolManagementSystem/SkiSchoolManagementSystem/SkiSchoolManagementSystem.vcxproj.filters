@@ -30,7 +30,7 @@
     <ClCompile Include="Lesson.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Availability.cpp">
+    <ClCompile Include="additionalOptions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -53,7 +53,7 @@
     <ClInclude Include="Lesson.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Availability.h">
+    <ClInclude Include="additionalOptions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
