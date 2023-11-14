@@ -1,2 +1,5 @@
-﻿  additionalOptions.cpp
+﻿  Lesson.cpp
+D:\GIT - priv\projects\Ski School Management System\SkiSchoolManagementSystem\SkiSchoolManagementSystem\Lesson.cpp(46,7): warning C4101: 'ans': unreferenced local variable
+D:\GIT - priv\projects\Ski School Management System\SkiSchoolManagementSystem\SkiSchoolManagementSystem\Lesson.cpp(230,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\GIT - priv\projects\Ski School Management System\SkiSchoolManagementSystem\SkiSchoolManagementSystem\Lesson.cpp(326,16): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
   SkiSchoolManagementSystem.vcxproj -> D:\GIT - priv\projects\Ski School Management System\SkiSchoolManagementSystem\x64\Debug\SkiSchoolManagementSystem.exe

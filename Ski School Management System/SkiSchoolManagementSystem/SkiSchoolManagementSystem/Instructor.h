@@ -31,7 +31,6 @@ public:
 	// void countPZNInstructors;	// counts instructors with PNZ title
 	void checkAvailability();
 	void changeAvailability();		// changes instructor's availability
-	//void resetAvailability();
 };
 
 // functions' declarations

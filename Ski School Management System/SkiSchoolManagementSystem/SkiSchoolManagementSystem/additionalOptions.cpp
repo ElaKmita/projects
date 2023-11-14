@@ -58,7 +58,7 @@ void paymentMenu()
 	}
 
 	cout << "\n\n - PAYMENT -\n\n";
-	cout << "1. Make all payment\n";
+	cout << "1. Make all payments\n";
 	cout << "2. Pay one instructor\n";
 	cout << "0. EXIT\n\n";
 	cout << "Insert your choice: ";

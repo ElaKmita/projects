@@ -128,10 +128,10 @@ void lessonMenu(Lesson& lesson)
 			lesson.addLesson();
 			break;
 		case '2':
-			//lesson.findLesson();
+			lesson.findLesson();
 			break;
 		case '3':
-			//lesson.displayAllLessons();
+			lesson.displayAllLessons();
 			break;
 		default:
 			cout << "\nIncorrect choice.\nPlease select number from 0 to 3: \n\n";
