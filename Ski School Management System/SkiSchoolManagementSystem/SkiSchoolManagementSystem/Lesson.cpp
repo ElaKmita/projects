@@ -1,8 +1,13 @@
 ﻿#include "Lesson.h"
+#include "Instructor.h"
 
 using std::cout;
 using std::cin;
 using std::endl;
+
+void lessonsSearchingMenu();
+void searchLessonByInst();
+void searchLessonByLearner();
 
 int Lesson::getPrice(int learners, int hours)		// returns price for hour for one person
 {
@@ -141,6 +146,83 @@ void Lesson::addLesson()
 	pressToContinue();
 }
 
+void Lesson::findLesson()				// find the lesson by phone number or surname
+{
+	char ans;
+	lessonsSearchingMenu();
+	while (cin >> ans && ans != '0')
+	{
+		switch (ans)
+		{
+		case '0':
+			break;
+		case '1':
+		{
+			searchLessonByInst();
+			break;
+		}
+		case '2':
+		{
+			searchLessonByLearner();
+			break;
+		}
+		default:
+			cout << "\nIncorrect input. Select number from 0 to 2: ";
+		}
+		lessonsSearchingMenu();
+	}
+}
+
+
+void Lesson::displayAllLessons()		// display all lessons on a specific day
+{
+	int dayIdx = chooseDay() - 1;
+	
+	stmt.str("");
+
+	/*
+	SELECT l.id, sl.name, sl.surname, sl.phoneNumber, l.hour, l.numOfHours, l.numOfLearners, i.displayedName, sl.level, sl.slope
+	FROM
+		lesson AS l
+	INNER JOIN
+		instructor as i
+	ON
+		l.instructorId = i.id
+	INNER JOIN
+		ski_learner AS sl
+	ON
+		l.skiLearnerId =sl.id
+	WHERE
+		l.day = 'Monday'
+	ORDER BY l.hour DESC;
+	*/
+
+	stmt << "SELECT l.id, sl.name, sl.surname, sl.phoneNumber, l.hour, l.numOfHours, l.numOfLearners, i.displayedName, sl.level, sl.slope"
+		" FROM lesson AS l INNER JOIN instructor as i ON l.instructorId = i.id INNER JOIN ski_learner AS sl ON l.skiLearnerId = sl.id"
+		" WHERE l.day = '" << daysOfWeek[dayIdx] << "' ORDER BY l.hour ASC;";
+
+	query = stmt.str();
+	q = query.c_str();
+	mysql_query(connection, q);
+	res_set = mysql_store_result(connection);
+	
+	system("CLS");
+	cout << "\n\t\t\t\t\t" << "--- " << daysOfWeek[dayIdx] << "'s lessons --- \n\n";		
+	cout << std::left << std::setw(4) << "Id" << std::setw(12) << "Name" << std::setw(12) << "Surname" << std::setw(12) << "Phone Num" << std::setw(6) << "Hour" << std::setw(7) << "hours" << std::setw(9) << "people" << std::setw(15) << "Disp Name" << std::setw(30) << "level" << std::setw(20) << "slope" << endl << endl;
+	bool noItems = true;
+	while ((row = mysql_fetch_row(res_set)) != NULL)
+	{
+		cout << std::left << std::setw(4) << row[0] << std::setw(12) << row[1] << std::setw(12) << row[2] << std::setw(12) << row[3] << std::setw(6) << row[4] << std::setw(7) << row[5] << std::setw(9) << row[6] << std::setw(15) << row[7] << std::setw(30) << row[8] << std::setw(20) << row[9];
+		cout << endl;
+		noItems = false;
+	}
+	if (noItems)
+	{
+		cout << "\n\t\t\t\t\tNo lessons scheduled\n\n";
+	}
+	pressToContinue();
+}
+
 int chooseHour(int hoursNum)	// returns value from the menu (counting from 1) 
 {
 	system("CLS");
@@ -169,7 +251,7 @@ int chooseHour(int hoursNum)	// returns value from the menu (counting from 1)
 	return ans;
 }
 
-int chooseDay()					// returns value from the menu (counting from 1) 
+int chooseDay()							// returns value from the menu (counting from 1) 
 {
 	system("CLS");
 	cout << "Choose the day:\n\n";
@@ -282,4 +364,85 @@ void updateData(const int& instructorId, const int& skiLearnerId, const std::str
 	q = query.c_str();
 	mysql_query(connection, q);
 	sendQuery("SkiLearner's Data Successfully Updated");
+}
+
+void lessonsSearchingMenu()
+{
+	system("CLS");
+	cout << "\n- SEARCHING FOR A LESSONS - \n\n";
+	cout << "Search lessons by:\n\n";
+	cout << "1. Instructor\n";
+	cout << "2. Ski learner\n";
+	cout << "0. EXIT\n\n";
+	cout << "Insert your choice: ";
+}
+
+void searchLessonByInst()
+{
+	system("CLS");
+	int id;
+	Instructor inst;
+	isInstrKnown(&inst);
+	cout << "\n\nInsert instructor id: ";
+	cin >> id;
+	
+	stmt.str("");
+	stmt << "SELECT l.id, l.day, l.hour, l.numOfHours, l.numOfLearners, sl.name, sl.surname, sl.phoneNumber, sl.level, sl.slope"
+		" FROM lesson AS l INNER JOIN ski_learner AS sl ON l.skiLearnerId = sl.id"
+		" WHERE l.instructorId = " << id << " ORDER BY l.day;";
+
+	query = stmt.str();
+	q = query.c_str();
+	mysql_query(connection, q);
+	res_set = mysql_store_result(connection);
+
+	system("CLS");
+	cout << "\n\t\t\t\t\t" << "--- Scheduled lessons --- \n\n";		
+	cout << std::left << std::setw(4) << "Id" << std::setw(8) << "Day" << std::setw(6) << "Hour" << std::setw(7) << "hours" << std::setw(9) << "people" << std::setw(15) << "Name" << std::setw(12) << "Surname" << std::setw(12) << "Phone Num" << std::setw(30) << "level" << std::setw(20) << "slope" << endl << endl;
+	bool noItems = true;
+	while ((row = mysql_fetch_row(res_set)) != NULL)
+	{
+		cout << std::left << std::setw(4) << row[0] << std::setw(8) << row[1] << std::setw(6) << row[2] << std::setw(7) << row[3] << std::setw(9) << row[4] << std::setw(15) << row[5] << std::setw(12) << row[6] << std::setw(12) << row[7]  << std::setw(30) << row[8] << std::setw(20) << row[9];
+		cout << endl;
+		noItems = false;
+	}
+	if (noItems)
+	{
+		cout << "\n\t\t\t\t\tNo lessons scheduled\n\n";
+	}
+	pressToContinue();
+}
+
+void searchLessonByLearner()
+{
+	system("CLS");
+	char* phoneNum = new char[10];
+	cout << "\nInsert learner's phone number: ";
+	cin >> phoneNum;
+
+	stmt.str("");
+	stmt << "SELECT l.id, l.day, l.hour, l.numOfHours, l.numOfLearners, sl.name, sl.surname, i.displayedName, sl.level, sl.slope"
+		" FROM lesson AS l INNER JOIN instructor as i ON l.instructorId = i.id INNER JOIN ski_learner AS sl ON l.skiLearnerId = sl.id"
+		" WHERE sl.phoneNumber = '" << phoneNum << "' ;";
+
+	delete[] phoneNum;
+	query = stmt.str();
+	q = query.c_str();
+	mysql_query(connection, q);
+	res_set = mysql_store_result(connection);
+
+	cout << "\n\n\t\t\t\t\t" << "--- Scheduled lessons --- \n\n";
+	cout << std::left << std::setw(4) << "Id" << std::setw(15) << "Name" << std::setw(12) << "Surname" << std::setw(8) << "Day" << std::setw(6) << "Hour" << std::setw(7) << "hours" << std::setw(9) << "people" << std::setw(12) << "Instructor" << std::setw(30) << "level" << std::setw(20) << "slope" << endl << endl;
+	bool noItems = true;
+	while ((row = mysql_fetch_row(res_set)) != NULL)
+	{
+		cout << std::left << std::setw(4) << row[0] << std::setw(15) << row[5] << std::setw(12) << row[6] << std::setw(8) << row[1] << std::setw(6) << row[2] << std::setw(7) << row[3] << std::setw(9) << row[4] << std::setw(12) << row[7] << std::setw(30) << row[8] << std::setw(20) << row[9];
+		cout << endl;
+		noItems = false;
+	}
+	if (noItems)
+	{
+		cout << "\n\t\t\t\t\tNo lessons scheduled \n\n";
+	}
+	pressToContinue();
 }

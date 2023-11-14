@@ -23,8 +23,8 @@ private:
 
 public:
 	void addLesson();
-	void findLesson();
-	void displayAllLessons();
+	void findLesson();				// find the lesson by phone number or surname
+	void displayAllLessons();		// display all lessons on a specific day
 };
 
 // functions' declarations
