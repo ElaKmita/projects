@@ -29,6 +29,7 @@ public:
 	void addSkiLearner();			// adds new learner to the database
 	void displayAll();				// displays all ski learners
 	void findSkiLearner();			// finds learner in the database
+	void changeLevel();
 	void modifyData();				// modifies learner's data
 	void deleteSkiLerner();			// deletes learner from database
 };

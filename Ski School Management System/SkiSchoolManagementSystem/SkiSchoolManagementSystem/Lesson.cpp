@@ -1,13 +1,8 @@
 ﻿#include "Lesson.h"
-#include "Instructor.h"
 
 using std::cout;
 using std::cin;
 using std::endl;
-
-void lessonsSearchingMenu();
-void searchLessonByInst();
-void searchLessonByLearner();
 
 int Lesson::getPrice(int learners, int hours)		// returns price for hour for one person
 {
@@ -179,23 +174,6 @@ void Lesson::displayAllLessons()		// display all lessons on a specific day
 	int dayIdx = chooseDay() - 1;
 	
 	stmt.str("");
-
-	/*
-	SELECT l.id, sl.name, sl.surname, sl.phoneNumber, l.hour, l.numOfHours, l.numOfLearners, i.displayedName, sl.level, sl.slope
-	FROM
-		lesson AS l
-	INNER JOIN
-		instructor as i
-	ON
-		l.instructorId = i.id
-	INNER JOIN
-		ski_learner AS sl
-	ON
-		l.skiLearnerId =sl.id
-	WHERE
-		l.day = 'Monday'
-	ORDER BY l.hour DESC;
-	*/
 
 	stmt << "SELECT l.id, sl.name, sl.surname, sl.phoneNumber, l.hour, l.numOfHours, l.numOfLearners, i.displayedName, sl.level, sl.slope"
 		" FROM lesson AS l INNER JOIN instructor as i ON l.instructorId = i.id INNER JOIN ski_learner AS sl ON l.skiLearnerId = sl.id"

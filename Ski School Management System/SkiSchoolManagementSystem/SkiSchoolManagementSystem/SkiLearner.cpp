@@ -107,7 +107,7 @@ void SkiLearner::displayAll()
 	case '1':
 	{
 		system("CLS");
-		cin.get();
+		//cin.get();
 		cout << "\n--- SKI LEARNERS ---\n";
 		while ((row = mysql_fetch_row(res_set)) != NULL)
 		{
@@ -118,13 +118,13 @@ void SkiLearner::displayAll()
 	}
 	case '2':
 		system("CLS");
-		cin.get();
+		//cin.get();
 		displayTableViewSL();
 		pressToContinue();
 		break;
 	default:
 		system("CLS");
-		cin.get();
+		//cin.get();
 		displayTableViewSL();
 		pressToContinue();
 		break;
@@ -156,6 +156,27 @@ void SkiLearner::findSkiLearner()
 	pressToContinue();
 }
 
+void SkiLearner::changeLevel()
+{
+	system("CLS");
+	int id;
+	cout << "\Changing ski learner's level\n\n";
+	isLearnerKnown(this);
+	cout << endl << "Enter learner id: ";
+	cin >> id;
+	system("CLS");
+	setLevel();
+	system("CLS");
+	setSlope();
+
+	stmt.str("");
+	stmt << "UPDATE ski_learner SET level = '" << level << "', slope = '" << slope << "' WHERE id = " << id << ";";
+	query = stmt.str();
+	q = query.c_str();
+	sendQuery("Modification Successfully Completed");
+	pressToContinue();
+}
+
 void SkiLearner::modifyData()
 {
 	system("CLS");
@@ -167,7 +188,6 @@ void SkiLearner::modifyData()
 	if (checkifSkiLearnerExist(id))
 	{
 		learnerModificationMenu();
-		//cin >> ans;
 		std::string column, newValue;
 		while (cin >> ans)		// ans != '0'
 		{
@@ -240,7 +260,6 @@ void SkiLearner::modifyData()
 	else
 		cout << "\n\nLearner doesn't exist!\n\n";
 
-	cin.get();
 	pressToContinue();
 }
 
@@ -357,13 +376,8 @@ void modificationSL(std::string colName, std::string newVal, int id)
 	stmt << "UPDATE ski_learner SET " << colName << " = '" << newVal << "' WHERE id = " << id << ";";
 	query = stmt.str();
 	q = query.c_str();
-	if (mysql_query(connection, q) == 0)			// mysql_query - sens query to the database
-	{
-		cout << endl << endl << "Modification Successfully Completed" << endl << endl << endl;
-	}
-	else {
-		cout << endl << endl << "ERROR !" << endl << "Contact Technical Team " << endl << endl << endl;
-	}
+	sendQuery("Modification Successfully Completed");
+	pressToContinue();
 }
 
 int checkifSkiLearnerExist(const int& skiLearnerId)
