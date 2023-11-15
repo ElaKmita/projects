@@ -7,6 +7,7 @@
 #include "mysqlConnection.h"
 #include "additionalFunctions.h"
 #include "SkiLearner.h"
+#include "Instructor.h"
 
 class Lesson
 {
@@ -33,3 +34,6 @@ int chooseHour(int hoursNum);
 int checkifSkiLearnerExist(const int& skiLearnerId);
 void findAvailableInst(const std::string& day, const int& hourIndex, const int& hoursNum, std::vector<int>& resultsList, std::vector<std::string>& nameList);
 void updateData(const int& instructorId, const int& skiLearnerId, const std::string& day, const int& hourIdx, const int& hoursNum, const int& price);
+void lessonsSearchingMenu();
+void searchLessonByInst();
+void searchLessonByLearner();

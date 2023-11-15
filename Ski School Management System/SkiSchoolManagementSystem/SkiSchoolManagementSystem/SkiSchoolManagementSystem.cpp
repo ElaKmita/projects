@@ -211,8 +211,9 @@ void displayMenuSL()
 	cout << "1. Add new learner\n";
 	cout << "2. Display all learners\n";
 	cout << "3. Find learner\n";
-	cout << "4. Modify learner's data\n";
-	cout << "5. Delete learner\n";
+	cout << "4. Change learner's level\n";
+	cout << "5. Modify learner's data\n";
+	cout << "6. Delete learner\n";
 	cout << "0. EXIT\n\n";
 	cout << "Choose option: ";
 }
@@ -239,9 +240,12 @@ void learnerMenu(SkiLearner& skiLearner)
 			skiLearner.findSkiLearner();
 			break;
 		case '4':
-			skiLearner.modifyData();
+			skiLearner.changeLevel();
 			break;
 		case '5':
+			skiLearner.modifyData();
+			break;
+		case '6':
 			skiLearner.deleteSkiLerner();
 			break;
 		default:
