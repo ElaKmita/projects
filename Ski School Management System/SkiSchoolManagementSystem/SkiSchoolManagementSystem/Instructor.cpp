@@ -58,8 +58,65 @@ void Instructor::addInstructor()
 	else {
 		cout << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl;
 	}
+	pressToContinue();
 }
 
+void Instructor::displayAll()
+{
+	query = "SELECT * FROM instructor;";
+	q = query.c_str();
+	mysql_query(connection, q);
+	res_set = mysql_store_result(connection);
+	bool validInput = false;
+	while (!validInput)
+	{
+		system("CLS");
+		int ans;
+		cout << "\nDisplay views:\n\n";
+		cout << "1. Individual View\n2. Table View\n\n";
+		cout << "Select display view: ";
+		try
+		{
+			cin >> ans;
+			if (cin.fail())
+			{
+				throw std::invalid_argument("Incorrect input");
+			}
+			validInput = true;
+			switch (ans)
+			{
+			case 1:
+			{
+				system("CLS");
+				cout << "\n--- INSTRUCTORS ---\n";
+				while ((row = mysql_fetch_row(res_set)) != NULL)
+				{
+					displayIndividualView(row);
+				}
+				pressToContinue();
+				break;
+			}
+			case 2:
+				system("CLS");
+				displayTableView();
+				pressToContinue();
+				break;
+			default:
+				system("CLS");
+				displayTableView();
+				pressToContinue();
+				break;
+			}
+		}
+		catch (const std::invalid_argument& e)
+		{
+			cout << "\n\nError: " << e.what() << endl;
+			cin.clear();	// clear the error flags of the input stream
+			pressToContinue();
+		}
+	}
+}
+/*
 void Instructor::displayAll()
 {
 	query = "SELECT * FROM instructor;";
@@ -72,33 +129,44 @@ void Instructor::displayAll()
 	cout << "\nDisplay views:\n\n";
 	cout << "1. Individual View\n2. Table View\n\n";
 	cout << "Select display view: ";
-	cin >> ans;
-
-	switch (ans)
+	try
 	{
-	case '1':
-	{
-		system("CLS");
-		cout << "\n--- INSTRUCTORS ---\n";
-		while ((row = mysql_fetch_row(res_set)) != NULL)
+		cin >> ans;
+		if (cin.fail())
 		{
-			displayIndividualView(row);
+			throw std::invalid_argument("Incorrect input\n\n");
 		}
-		pressToContinue();
-		break;
+		switch (ans)
+		{
+		case '1':
+		{
+			system("CLS");
+			cout << "\n--- INSTRUCTORS ---\n";
+			while ((row = mysql_fetch_row(res_set)) != NULL)
+			{
+				displayIndividualView(row);
+			}
+			pressToContinue();
+			break;
+		}
+		case '2':
+			system("CLS");
+			displayTableView();
+			pressToContinue();
+			break;
+		default:
+			system("CLS");
+			displayTableView();
+			pressToContinue();
+			break;
+		}
 	}
-	case '2':
-		system("CLS");
-		displayTableView();
-		pressToContinue();
-		break;
-	default:
-		system("CLS");
-		displayTableView();
-		pressToContinue();
-		break;
+	catch (const std::invalid_argument& e)
+	{
+		std::cout << "Error: " << e.what() << std::endl;
 	}
 }
+*/
 
 void Instructor::findInstructor()
 {
@@ -132,78 +200,86 @@ void Instructor::modifyData()
 	isInstrKnown(this);
 	cout << endl << "Enter instructor id: ";
 	cin >> id;
-	system("CLS");
-	instModificationMenu();
-	std::string column, newValue;
-	while (cin >> ans)		// ans != '0'
+	if (checkifSkiInstructorExist(id))
 	{
-		switch (ans)
-		{
-		case '0':
-			break;
-		case '1':
-		{
-			cin.get();
-			column = "name";
-			cout << "Enter new name: ";
-			std::getline(cin, newValue);
-			capitalize(newValue);
-			modification(column, newValue, id);
-			break;
-		}
-		case '2':
-		{
-			cin.get();
-			column = "surname";
-			cout << "Enter new surname: ";
-			std::getline(cin, newValue);
-			capitalize(newValue);
-			modification(column, newValue, id);
-			break;
-		}
-		case '3':
-		{
-			cin.get();
-			column = "displayedName";
-			cout << "Enter new displayed name: ";
-			std::getline(cin, newValue);
-			upperCase(newValue);
-			modification(column, newValue, id);
-			break;
-		}
-		case '4':
-		{
-			cin.get();
-			column = "title";
-			cout << "Enter new title (I, AI SITN, I SITN, AI PZN, I PZN): ";
-			std::getline(cin, newValue);
-			upperCase(newValue);
-
-			while (newValue != "I" && newValue != "AI SITN" && newValue != "I SITN" && newValue != "AI PZN" && newValue != "I PZN")
-			{
-				cout << "Incorrect title \nChoose one of the given options\n";
-				cout << "Title (I, AI SITN, I SITN, AI PZN, I PZN): ";
-				std::getline(cin, newValue);
-				upperCase(newValue);
-			}
-			percent = setPercent(newValue);
-			modification(column, newValue, id);
-			modification("percent", std::to_string(percent), id);
-			break;
-		}
-		default:
-			cout << "Incorrect number\n\n";
-			break;
-		}
-
-		if (ans == '0')
-		{
-			cout << endl << endl;
-			break;
-		}
-
 		system("CLS");
 		instModificationMenu();
+		std::string column, newValue;
+		while (cin >> ans)		// ans != '0'
+		{
+			switch (ans)
+			{
+			case '0':
+				break;
+			case '1':
+			{
+				cin.get();
+				column = "name";
+				cout << "Enter new name: ";
+				std::getline(cin, newValue);
+				capitalize(newValue);
+				modification(column, newValue, id);
+				break;
+			}
+			case '2':
+			{
+				cin.get();
+				column = "surname";
+				cout << "Enter new surname: ";
+				std::getline(cin, newValue);
+				capitalize(newValue);
+				modification(column, newValue, id);
+				break;
+			}
+			case '3':
+			{
+				cin.get();
+				column = "displayedName";
+				cout << "Enter new displayed name: ";
+				std::getline(cin, newValue);
+				upperCase(newValue);
+				modification(column, newValue, id);
+				break;
+			}
+			case '4':
+			{
+				cin.get();
+				column = "title";
+				cout << "Enter new title (I, AI SITN, I SITN, AI PZN, I PZN): ";
+				std::getline(cin, newValue);
+				upperCase(newValue);
+
+				while (newValue != "I" && newValue != "AI SITN" && newValue != "I SITN" && newValue != "AI PZN" && newValue != "I PZN")
+				{
+					cout << "Incorrect title \nChoose one of the given options\n";
+					cout << "Title (I, AI SITN, I SITN, AI PZN, I PZN): ";
+					std::getline(cin, newValue);
+					upperCase(newValue);
+				}
+				percent = setPercent(newValue);
+				modification(column, newValue, id);
+				modification("percent", std::to_string(percent), id);
+				break;
+			}
+			default:
+				cout << "Incorrect number\n\n";
+				break;
+			}
+
+			if (ans == '0')
+			{
+				cout << endl << endl;
+				break;
+			}
+
+			system("CLS");
+			instModificationMenu();
+		}
+	}
+	else
+	{
+		cout << "\n\Instructor with this id doesn't exist!\n\n";
+		pressToContinue();
 	}
 }
 
@@ -215,22 +291,27 @@ void Instructor::deleteInstructor()
 	isInstrKnown(this);
 	cout << endl << "Enter instructor id: ";
 	cin >> id;
-	cout << endl << "Are you sure that you want delete this instructor? (y/n) ";
-	cin >> ans;
-	cin.get();
-	if (ans == 'y' || ans == 'Y')
+	if (checkifSkiInstructorExist(id))
 	{
-		stmt.str("");
-		stmt << "DELETE FROM instructor WHERE id = " << id << ";";
-		query = stmt.str();
-		q = query.c_str();
-		sendQuery("Instructor Deleted Successfully");
-		deleteAvailability(id);
+		cout << endl << "Are you sure that you want delete this instructor? (y/n) ";
+		cin >> ans;
+		if (ans == 'y' || ans == 'Y')
+		{
+			stmt.str("");
+			stmt << "DELETE FROM instructor WHERE id = " << id << ";";
+			query = stmt.str();
+			q = query.c_str();
+			sendQuery("Instructor Deleted Successfully");
+			deleteAvailability(id);
+		}
+		else
+		{
+			cout << "\nInstructor has not been deleted\n\n";
+		}
 	}
 	else
-	{
-		cout << "\nInstructor has not been deleted\n\n";
-	}
+		cout << "\n\Instructor with this id doesn't exist!\n\n";
+
 	pressToContinue();
 }
 
@@ -309,7 +390,7 @@ void displayTableView()				// displays instructors' data in table view
 
 void instModificationMenu()
 {
-	cout << endl << "- Data -\n";
+	cout << endl << "- Data -\n\n";
 	cout << "1. Name" << endl;
 	cout << "2. Surname" << endl;
 	cout << "3. Displayed name" << endl;
@@ -569,33 +650,16 @@ void hourChange(const int& id)
 	}
 };
 
-/*
-// sendQuery - function that should be used when only one query is sent
-void sendQuery(std::string successAnnouncement)
+int checkifSkiInstructorExist(const int& instrId)
 {
-	if (mysql_query(connection, q) == 0)			// mysql_query - sends query to the database
+	stmt.str("");
+	stmt << "SELECT COUNT(*) FROM instructor WHERE id = " << instrId << ";";
+	query = stmt.str();
+	q = query.c_str();				// convert to const char *
+	mysql_query(connection, q);
+	res_set = mysql_store_result(connection);
+	if ((row = mysql_fetch_row(res_set)) != NULL)
 	{
-		cout << endl << successAnnouncement << endl << endl;
-	}
-	else 
-	{
-		cout << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl;
+		return std::stoi(row[0]);;		// returns 0 if instructor doesn't exist or one if instructor exists
 	}
 }
-
-// sendMuliQuery - function that should be used when more than one query is sent
-void sendMultiQuery(std::string successAnnouncement)
-{
-	if (mysql_query(connection, q) == 0) // mysql_query - sends query to the database
-	{
-		do {
-		} while (mysql_next_result(connection) == 0);
-		cout << endl << successAnnouncement << endl << endl;
-	}
-	else {
-		cout << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl;
-	}
-	pressToContinue();
-}
-
-*/

@@ -47,3 +47,4 @@ void sendMultiQuery(std::string successAnnouncement);
 void weekChange(const int& id);
 void dayChange(const int& id);
 void hourChange(const int& id);
+int checkifSkiInstructorExist(const int& instrId);

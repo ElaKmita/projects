@@ -39,7 +39,8 @@ void sendMultiQuery(std::string successAnnouncement)
 	}
 }
 
-void cinIgnore() {
+void cinIgnore()		// ignore erroneous input data
+{		
 
 #pragma push_macro("max")
 #undef max
@@ -49,7 +50,7 @@ void cinIgnore() {
 }
 
 std::array<std::string, 7> daysOfWeek = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
-std::array<std::string, 8> workingHours = { "8AM", "9AM", "10AM", "11AM", "12PM", "13PM", "14PM", "15PM" };
+std::array<std::string, 8> workingHours = { "8AM", "9AM", "10AM", "11AM", "12PM", "1PM", "2PM", "3PM" };
 
 // make string upper case
 void upperCase(std::string& str)
