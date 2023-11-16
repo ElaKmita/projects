@@ -8,3 +8,5 @@
 
 void resetWeek();			
 void payment();
+void payAll();
+void singlePay();

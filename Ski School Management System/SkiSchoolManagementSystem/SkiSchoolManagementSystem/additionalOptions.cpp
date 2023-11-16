@@ -4,8 +4,6 @@ using std::cout;
 using std::cin;
 using std::endl;
 
-void payAll();
-void singlePay();
 
 void resetWeek()
 {
@@ -66,6 +64,67 @@ void paymentMenu()
 
 void payment()
 {
+	int ans = -1;
+	bool validInput = false;
+	while (!validInput)
+	{
+		paymentMenu();
+		try
+		{
+			while (ans != 0)
+			{
+				cin >> ans;
+				if (cin.fail())
+				{
+					throw std::invalid_argument("Incorrect input");
+				}
+				if (ans < 0 || ans > 2)
+				{
+					throw "\nIncorrect input. Select number from 0 to 2\n\n";
+				}
+
+				switch (ans)
+				{
+				case 0:
+					validInput = true;
+					break;
+				case 1:
+				{
+					payAll();
+					validInput = true;
+					break;
+				}
+				case 2:
+				{
+					singlePay();
+					validInput = true;
+					break;
+				}
+				default:
+					cout << "\nIncorrect input. Select number from 0 to 2\n\n";
+					pressToContinue();
+				}
+				paymentMenu();
+			}
+		}
+		catch (const std::invalid_argument& e)
+		{
+			cout << "\n\nError: " << e.what() << endl;
+			cin.clear();	// clear the error flags of the input stream
+			pressToContinue();
+		}
+		catch (const char* e)
+		{
+			cout << "\n\n" << e << endl;
+			cin.clear();	// clear the error flags of the input stream
+			pressToContinue();
+		}
+	}
+}
+
+/*
+void payment()
+{
 	char ans;
 	paymentMenu();
 	while (cin >> ans && ans != '0')
@@ -83,13 +142,14 @@ void payment()
 		{
 			singlePay();
 			break;
-		}	
+		}
 		default:
 			cout << "\nIncorrect input. Select number from 0 to 2: ";
 		}
 		paymentMenu();
-	}	
+	}
 }
+*/
 
 void payAll()
 {
