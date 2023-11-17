@@ -451,34 +451,60 @@ void searchLessonByInst()
 
 void searchLessonByLearner()
 {
-	system("CLS");
-	char* phoneNum = new char[10];
-	cout << "\nInsert learner's phone number: ";
-	cin >> phoneNum;
+	cinIgnore();
+	char* phoneNum = new char[11];		// The input should be 10 characters long (9 digits + null character), but I want to verify that the user has entered the correct number of digits
+	bool validInput = false;
+	while (!validInput)
+	{
+		try
+		{
+			system("CLS");
+			cout << "\nInsert learner's phone number (e.g. 123456789): ";
+			cin.width(11);		
+			cin >> phoneNum;
+			if (phoneNum[3] == '-')
+			{
+				throw std::invalid_argument("Invalid phone number format. \nExpected format: 123456789");
+			}
+			if (strlen(phoneNum) != 9)
+			{
+				throw std::length_error("Invalid phone number. \nNumber should consist of 9 digits. \nExpected format: 123456789");
+			}
+			validInput = true;
+			stmt.str("");
+			stmt << "SELECT l.id, l.day, l.hour, l.numOfHours, l.numOfLearners, sl.name, sl.surname, i.displayedName, sl.level, sl.slope"
+				" FROM lesson AS l INNER JOIN instructor as i ON l.instructorId = i.id INNER JOIN ski_learner AS sl ON l.skiLearnerId = sl.id"
+				" WHERE sl.phoneNumber = '" << phoneNum << "' ;";
+			query = stmt.str();
+			q = query.c_str();
+			mysql_query(connection, q);
+			res_set = mysql_store_result(connection);
 
-	stmt.str("");
-	stmt << "SELECT l.id, l.day, l.hour, l.numOfHours, l.numOfLearners, sl.name, sl.surname, i.displayedName, sl.level, sl.slope"
-		" FROM lesson AS l INNER JOIN instructor as i ON l.instructorId = i.id INNER JOIN ski_learner AS sl ON l.skiLearnerId = sl.id"
-		" WHERE sl.phoneNumber = '" << phoneNum << "' ;";
-
+			cout << "\n\n\t\t\t\t\t" << "--- Scheduled lessons --- \n\n";
+			cout << std::left << std::setw(4) << "Id" << std::setw(15) << "Name" << std::setw(12) << "Surname" << std::setw(8) << "Day" << std::setw(6) << "Hour" << std::setw(7) << "hours" << std::setw(9) << "people" << std::setw(12) << "Instructor" << std::setw(30) << "level" << std::setw(20) << "slope" << endl << endl;
+			bool noItems = true;
+			while ((row = mysql_fetch_row(res_set)) != NULL)
+			{
+				cout << std::left << std::setw(4) << row[0] << std::setw(15) << row[5] << std::setw(12) << row[6] << std::setw(8) << row[1] << std::setw(6) << row[2] << std::setw(7) << row[3] << std::setw(9) << row[4] << std::setw(12) << row[7] << std::setw(30) << row[8] << std::setw(20) << row[9];
+				cout << endl;
+				noItems = false;
+			}
+			if (noItems)
+			{
+				cout << "\n\t\t\t\t\tNo lessons scheduled \n\n";
+			}
+		}
+		catch (const std::invalid_argument& e)
+		{
+			cout << endl << "ERROR: " << e.what() << endl;
+			cin.clear();	// clear the error flags of the input stream
+		}
+		catch (const std::length_error& e)
+		{
+			cout << endl << "ERROR: " << e.what() << endl;
+			cin.clear();	// clear the error flags of the input stream
+		}
+		pressToContinue();
+	}
 	delete[] phoneNum;
-	query = stmt.str();
-	q = query.c_str();
-	mysql_query(connection, q);
-	res_set = mysql_store_result(connection);
-
-	cout << "\n\n\t\t\t\t\t" << "--- Scheduled lessons --- \n\n";
-	cout << std::left << std::setw(4) << "Id" << std::setw(15) << "Name" << std::setw(12) << "Surname" << std::setw(8) << "Day" << std::setw(6) << "Hour" << std::setw(7) << "hours" << std::setw(9) << "people" << std::setw(12) << "Instructor" << std::setw(30) << "level" << std::setw(20) << "slope" << endl << endl;
-	bool noItems = true;
-	while ((row = mysql_fetch_row(res_set)) != NULL)
-	{
-		cout << std::left << std::setw(4) << row[0] << std::setw(15) << row[5] << std::setw(12) << row[6] << std::setw(8) << row[1] << std::setw(6) << row[2] << std::setw(7) << row[3] << std::setw(9) << row[4] << std::setw(12) << row[7] << std::setw(30) << row[8] << std::setw(20) << row[9];
-		cout << endl;
-		noItems = false;
-	}
-	if (noItems)
-	{
-		cout << "\n\t\t\t\t\tNo lessons scheduled \n\n";
-	}
-	pressToContinue();
 }

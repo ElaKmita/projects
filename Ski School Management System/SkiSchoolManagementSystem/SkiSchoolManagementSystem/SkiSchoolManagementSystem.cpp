@@ -54,6 +54,71 @@ void displayMainMenu()
 
 void mainMenu()
 {
+	int choice = -1;
+	bool validInput = false;
+	while (!validInput)
+	{
+		try
+		{
+			while (choice != 0)
+			{
+				displayMainMenu();
+				cin >> choice;
+				if (cin.fail())
+				{
+					throw std::invalid_argument("Incorrect input. \nPlease select number from 0 to 4.");
+				}
+				validInput = true;
+				switch (choice)
+				{
+				case 0:
+					cout << "\n\nGoodbye!\n\n";
+					exit(0);
+					break;
+				case 1:
+				{
+					Lesson l;
+					lessonMenu(l); 
+					break;
+				}
+				case 2:
+				{
+					Instructor i;
+					instructorMenu(i);
+					break;
+				}
+				case 3:
+				{
+					SkiLearner sl;
+					learnerMenu(sl);
+					break;
+				}
+				case 4:
+				{
+					AdditionalOptionsMenu();
+					break;
+				}
+				default:
+					cout << "\nIncorrect choice.\nPlease select number from 0 to 4.\n\n";
+					pressToContinue();
+					break;
+				}
+				validInput = false;
+			}
+		}
+		catch (const std::invalid_argument& e)
+		{
+			cout << endl << "ERROR: " << e.what() << endl << endl;
+			cin.clear();
+			pressToContinue();
+			choice = -1;
+		}
+	}
+}
+
+/*
+void mainMenu()
+{
 	char choice;
 	displayMainMenu();
 
@@ -97,7 +162,7 @@ void mainMenu()
 		displayMainMenu();
 	}
 }
-
+*/
 
 // MENU - Lesson
 
