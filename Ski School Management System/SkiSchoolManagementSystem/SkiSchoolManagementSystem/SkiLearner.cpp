@@ -52,6 +52,7 @@ void SkiLearner::setSlope()
 void SkiLearner::addSkiLearner()
 {
 	system("CLS");
+	cinIgnore();
 	cout << "\n- Adding new ski learner -\n\n";
 	cout << "\nEnter data\n\n";
 	cout << "Name: ";
@@ -135,6 +136,7 @@ void SkiLearner::displayAll()
 void SkiLearner::findSkiLearner()
 {
 	system("CLS");
+	cinIgnore();
 	cout << "\n- Searching for ski learner -\n\n";
 	std::string searchData;
 	cout << "\nEnter search data (name or surname or phone number): ";
@@ -332,7 +334,7 @@ void isLearnerKnown(SkiLearner* skiLearner)
 	cout << "Do you know learner id? (y/n) ";
 	cin >> ans;
 	system("CLS");
-	if (ans == 'n')
+	if (ans == 'n' || ans == 'N')
 	{
 		char num;
 		cout << "\n1. Find learner\n2. Display all\n\nChoose option: ";

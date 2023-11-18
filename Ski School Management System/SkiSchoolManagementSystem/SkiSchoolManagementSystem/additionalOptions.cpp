@@ -76,35 +76,31 @@ void payment()
 				cin >> ans;
 				if (cin.fail())
 				{
-					throw std::invalid_argument("Incorrect input");
+					throw std::invalid_argument("Incorrect input.\n Select number from 0 to 2");
 				}
 				if (ans < 0 || ans > 2)
 				{
-					throw "\nIncorrect input. Select number from 0 to 2\n\n";
+					throw "Incorrect input. Select number from 0 to 2.";
 				}
-
 				switch (ans)
 				{
 				case 0:
-					validInput = true;
 					break;
 				case 1:
 				{
 					payAll();
-					validInput = true;
 					break;
 				}
 				case 2:
 				{
 					singlePay();
-					validInput = true;
 					break;
 				}
 				default:
-					cout << "\nIncorrect input. Select number from 0 to 2\n\n";
+					cout << "Incorrect input. Select number from 0 to 2";
 					pressToContinue();
 				}
-				paymentMenu();
+				validInput = (ans >= 0 && ans <= 2) ? true : false;
 			}
 		}
 		catch (const std::invalid_argument& e)
@@ -112,12 +108,14 @@ void payment()
 			cout << "\n\nError: " << e.what() << endl;
 			cin.clear();	// clear the error flags of the input stream
 			pressToContinue();
+			ans = -1;
 		}
 		catch (const char* e)
 		{
 			cout << "\n\n" << e << endl;
 			cin.clear();	// clear the error flags of the input stream
 			pressToContinue();
+			ans = -1;
 		}
 	}
 }
