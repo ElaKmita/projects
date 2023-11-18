@@ -21,6 +21,7 @@ double Instructor::setPercent(std::string& _title)
 void Instructor::addInstructor()
 {
 	system("CLS");
+	cinIgnore();
 	cout << "\n- Adding new instructor -\n\n";
 	cout << "Enter data\n\n";
 	cout << "Name: ";
@@ -116,57 +117,6 @@ void Instructor::displayAll()
 		}
 	}
 }
-/*
-void Instructor::displayAll()
-{
-	query = "SELECT * FROM instructor;";
-	q = query.c_str();
-	mysql_query(connection, q);
-	res_set = mysql_store_result(connection);
-
-	system("CLS");
-	char ans;
-	cout << "\nDisplay views:\n\n";
-	cout << "1. Individual View\n2. Table View\n\n";
-	cout << "Select display view: ";
-	try
-	{
-		cin >> ans;
-		if (cin.fail())
-		{
-			throw std::invalid_argument("Incorrect input\n\n");
-		}
-		switch (ans)
-		{
-		case '1':
-		{
-			system("CLS");
-			cout << "\n--- INSTRUCTORS ---\n";
-			while ((row = mysql_fetch_row(res_set)) != NULL)
-			{
-				displayIndividualView(row);
-			}
-			pressToContinue();
-			break;
-		}
-		case '2':
-			system("CLS");
-			displayTableView();
-			pressToContinue();
-			break;
-		default:
-			system("CLS");
-			displayTableView();
-			pressToContinue();
-			break;
-		}
-	}
-	catch (const std::invalid_argument& e)
-	{
-		std::cout << "Error: " << e.what() << std::endl;
-	}
-}
-*/
 
 void Instructor::findInstructor()
 {
@@ -195,90 +145,106 @@ void Instructor::findInstructor()
 void Instructor::modifyData()
 {
 	system("CLS");
-	char ans;
+	int ans;
 	cout << "\n- Modyfying instructor's data -\n\n";
 	isInstrKnown(this);
 	cout << endl << "Enter instructor id: ";
-	cin >> id;
-	if (checkifSkiInstructorExist(id))
+	if (cin >> id)
 	{
-		system("CLS");
-		instModificationMenu();
-		std::string column, newValue;
-		while (cin >> ans)		// ans != '0'
+		if (checkifSkiInstructorExist(id))
 		{
-			switch (ans)
+			bool validInput = false;
+			while (!validInput)
 			{
-			case '0':
-				break;
-			case '1':
-			{
-				cin.get();
-				column = "name";
-				cout << "Enter new name: ";
-				std::getline(cin, newValue);
-				capitalize(newValue);
-				modification(column, newValue, id);
-				break;
-			}
-			case '2':
-			{
-				cin.get();
-				column = "surname";
-				cout << "Enter new surname: ";
-				std::getline(cin, newValue);
-				capitalize(newValue);
-				modification(column, newValue, id);
-				break;
-			}
-			case '3':
-			{
-				cin.get();
-				column = "displayedName";
-				cout << "Enter new displayed name: ";
-				std::getline(cin, newValue);
-				upperCase(newValue);
-				modification(column, newValue, id);
-				break;
-			}
-			case '4':
-			{
-				cin.get();
-				column = "title";
-				cout << "Enter new title (I, AI SITN, I SITN, AI PZN, I PZN): ";
-				std::getline(cin, newValue);
-				upperCase(newValue);
-
-				while (newValue != "I" && newValue != "AI SITN" && newValue != "I SITN" && newValue != "AI PZN" && newValue != "I PZN")
+				system("CLS");
+				instModificationMenu();
+				std::string column, newValue;
+				try
 				{
-					cout << "Incorrect title \nChoose one of the given options\n";
-					cout << "Title (I, AI SITN, I SITN, AI PZN, I PZN): ";
-					std::getline(cin, newValue);
-					upperCase(newValue);
+					cin >> ans;
+					if (cin.fail())
+					{
+						throw std::invalid_argument("Incorrect input");
+					}
+					switch (ans)
+					{
+					case 0:
+						break;
+					case 1:
+					{
+						cin.get();
+						column = "name";
+						cout << "\nEnter new name: ";
+						std::getline(cin, newValue);
+						capitalize(newValue);
+						modification(column, newValue, id);
+						break;
+					}
+					case 2:
+					{
+						cin.get();
+						column = "surname";
+						cout << "\nEnter new surname: ";
+						std::getline(cin, newValue);
+						capitalize(newValue);
+						modification(column, newValue, id);
+						break;
+					}
+					case 3:
+					{
+						cin.get();
+						column = "displayedName";
+						cout << "\nEnter new displayed name: ";
+						std::getline(cin, newValue);
+						upperCase(newValue);
+						modification(column, newValue, id);
+						break;
+					}
+					case 4:
+					{
+						cin.get();
+						column = "title";
+						cout << "\nEnter new title (I, AI SITN, I SITN, AI PZN, I PZN): ";
+						std::getline(cin, newValue);
+						upperCase(newValue);
+
+						while (newValue != "I" && newValue != "AI SITN" && newValue != "I SITN" && newValue != "AI PZN" && newValue != "I PZN")
+						{
+							cout << "Incorrect title \nChoose one of the given options\n";
+							cout << "Title (I, AI SITN, I SITN, AI PZN, I PZN): ";
+							std::getline(cin, newValue);
+							upperCase(newValue);
+						}
+						percent = setPercent(newValue);
+						modification(column, newValue, id);
+						modification("percent", std::to_string(percent), id);
+						break;
+					}
+					default:
+						cout << "\nIncorrect number\n";
+						pressToContinue();
+						break;
+					}
+					validInput = ans == 0 ? true : false;
 				}
-				percent = setPercent(newValue);
-				modification(column, newValue, id);
-				modification("percent", std::to_string(percent), id);
-				break;
+				catch (const std::invalid_argument& e)
+				{
+					cout << "\n\nError: " << e.what() << endl;
+					cin.clear();	// clear the error flags of the input stream
+					pressToContinue();
+				}
 			}
-			default:
-				cout << "Incorrect number\n\n";
-				break;
-			}
-
-			if (ans == '0')
-			{
-				cout << endl << endl;
-				break;
-			}
-
-			system("CLS");
-			instModificationMenu();
+		}
+		else
+		{
+			cout << "\nInstructor with this id doesn't exist!\n\n";
+			pressToContinue();
 		}
 	}
 	else
 	{
-		cout << "\n\Instructor with this id doesn't exist!\n\n";
+		cout << "\nInvalid data! Expected an integer!\n";
+		cin.clear();
 		pressToContinue();
 	}
 }
@@ -290,28 +256,35 @@ void Instructor::deleteInstructor()
 	cout << "\n- Removing instructor from the database -\n\n";
 	isInstrKnown(this);
 	cout << endl << "Enter instructor id: ";
-	cin >> id;
-	if (checkifSkiInstructorExist(id))
+	if (cin >> id)
 	{
-		cout << endl << "Are you sure that you want delete this instructor? (y/n) ";
-		cin >> ans;
-		if (ans == 'y' || ans == 'Y')
+		if (checkifSkiInstructorExist(id))
 		{
-			stmt.str("");
-			stmt << "DELETE FROM instructor WHERE id = " << id << ";";
-			query = stmt.str();
-			q = query.c_str();
-			sendQuery("Instructor Deleted Successfully");
-			deleteAvailability(id);
+			cout << endl << "Are you sure that you want delete this instructor? (y/n) ";
+			cin.width(1);
+			cin >> ans;
+			if (ans == 'y' || ans == 'Y')
+			{
+				stmt.str("");
+				stmt << "DELETE FROM instructor WHERE id = " << id << ";";
+				query = stmt.str();
+				q = query.c_str();
+				sendQuery("Instructor Deleted Successfully");
+				deleteAvailability(id);
+			}
+			else
+			{
+				cout << "\nInstructor has not been deleted\n\n";
+			}
 		}
 		else
-		{
-			cout << "\nInstructor has not been deleted\n\n";
-		}
+			cout << "\nInstructor with this id doesn't exist!\n\n";
 	}
 	else
-		cout << "\n\Instructor with this id doesn't exist!\n\n";
-
+	{
+		cout << "\nInvalid data! Expected an integer!\n";
+		cin.clear();
+	}
 	pressToContinue();
 }
 
@@ -321,48 +294,90 @@ void Instructor::checkAvailability()
 	cout << "\n- Checking instructor's availability -\n\n";
 	isInstrKnown(this);
 	cout << endl << "Enter instructor id: ";
-	cin >> id;
-	system("CLS");
-	cout << "\n- AVAILABILITY -\n";
-	showAvailability(id);
-	//pressToContinue();
+	if (cin >> id)
+	{
+		system("CLS");
+		cout << "\n- AVAILABILITY -\n";
+		showAvailability(id);
+	}
+	else
+	{
+		cout << "\nInvalid data! Expected an integer!\n";
+		cin.clear();
+		pressToContinue();
+	}
 }
 
 void Instructor::changeAvailability()
 {
-	char ans = 1;
-	//char repetition = 'y';
 	system("CLS");
 	cout << "\n- Changing instructor's availability -\n\n";
 	isInstrKnown(this);
 	cout << endl << "Enter instructor id: ";
-	cin >> id;
-	while (ans != '0')
+	if (cin >> id)
 	{
-		system("CLS");
-		cout << "\n- AVAILABILITY CHANGE -\n\n";
-		cout << "1. Change whole week\n2. Change whole day \n3. Change specific hour\n0. EXIT\n\n";
-		cin >> ans;
-		switch (ans)
+		if (checkifSkiInstructorExist(id))
 		{
-		case '0':
-			break;
-		case '1':
-			weekChange(id);
-			break;
-		case '2':
-			dayChange(id);
-			break;
-		case '3':
-			hourChange(id);
-			break;
-		default:
-			cout << "Incorrect choice";
-			break;
+			int ans = -1;
+			bool validInput = false;
+			while (!validInput)
+			{
+				while (ans != 0)
+				{
+					system("CLS");
+					cout << "\n- AVAILABILITY CHANGE -\n\n";
+					cout << "1. Change whole week\n2. Change whole day \n3. Change specific hour\n0. EXIT\n\n";
+					cout << "Choose your option: ";
+					try
+					{
+						cin >> ans;
+						if (cin.fail())
+						{
+							throw std::invalid_argument("Incorrect input");
+						}
+						switch (ans)
+						{
+						case 0:
+							break;
+						case 1:
+							weekChange(id);
+							break;
+						case 2:
+							dayChange(id);
+							break;
+						case 3:
+							hourChange(id);
+							break;
+						default:
+							cout << "Incorrect choice";
+							pressToContinue();
+							break;
+						}
+						validInput = ans == 0 ? true : false;
+					}
+					catch (const std::invalid_argument& e)
+					{
+						cout << "\n\nError: " << e.what() << endl;
+						cin.clear();	// clear the error flags of the input stream
+						pressToContinue();
+						ans = -1;
+					}
+				}
+			}
+		}
+		else
+		{
+			cout << "\n\Instructor with this id doesn't exist!\n";
+			pressToContinue();
 		}
 	}
+	else
+	{
+		cout << "\nInvalid data! Expected an integer!\n";
+		cin.clear();
+		pressToContinue();
+	}
 }
-
 
 // additional functions
 
@@ -409,7 +424,9 @@ void isInstrKnown(Instructor* instr)
 	{
 		char num;
 		cout << "\n1. Find instructor\n2. Display all\n\nChoose option: ";
+		cin.width(1);
 		cin >> num;
+		cinIgnore();		// ignore residue if user's input is longer than one character
 		switch (num)
 		{
 		case '1':
@@ -422,11 +439,8 @@ void isInstrKnown(Instructor* instr)
 			instr->displayAll();
 			break;
 		default:
-		{
-			cout << "Incorrect number\n\n";
 			instr->displayAll();
 			break;
-		}
 		}
 	}
 }
@@ -532,16 +546,20 @@ int daysMenu()		// returns value from the menu (counting from 1)
 		cout << i << ". " << d << endl;
 		i++;
 	}
-	cout << "0. EXIT" << endl << endl;
-	// funkcja z array i obsluga blednie wprowadzonych danych
+	cout << "\n0. EXIT" << endl << endl;
 	int ans;
-	cout << "Choose your option: ";
-	cin >> ans;
-	// OBSŁUGA BŁĘDNIE WPROWADZONYCH DANYCH
-	if (ans >= 1 && ans <= daysOfWeek.size())
-		return ans;
-	else
-		return 0;
+	while (true)
+	{
+		cout << "Choose your option: ";
+		if (cin >> ans && ans >= 0 && ans <= daysOfWeek.size())
+			return ans;
+		else
+		{
+			cout << "\nInvalid data! Expected number from 0 to " << daysOfWeek.size() << ".\n\n";
+			cin.clear();
+			cinIgnore();
+		}
+	}
 }
 
 int hoursMenu()
@@ -554,36 +572,49 @@ int hoursMenu()
 		cout << i << ". " << h << endl;
 		i++;
 	}
-	cout << "0. EXIT" << endl << endl;
-	// funkcja z array i obsluga blednie wprowadzonych danych
+	cout << "\n0. EXIT" << endl << endl;
 	int ans;
-	cout << "Choose your option: ";
-	cin >> ans;
-	// OBSŁUGA BŁĘDNIE WPROWADZONYCH DANYCH
-	if (ans >= 1 && ans <= workingHours.size())
-		return ans;
-	else
-		return 0;
+	while (true)
+	{
+		cout << "Choose your option: ";
+		if (cin >> ans && ans >= 0 && ans <= workingHours.size())
+			return ans;
+		else
+		{
+			cout << "\nInvalid data! Expected number from 0 to " << workingHours.size() << ".\n\n";
+			cin.clear();
+			cinIgnore();
+		}
+	}
 }
 
 bool attendanceMenu()
 {
-	char ans;
-	system("CLS");
-	cout << "Change to:\n\n";
-	cout << "1. Presence" << endl;
-	cout << "2. Absence" << endl << endl;
-	cout << "Enter the number: ";
-	while (cin >> ans)
+	int ans;
+	while (true)
 	{
-		if (ans == '1')
-			return 1;
-		else if (ans == '2')
-			return 0;
-		else
+		system("CLS");
+		cout << "Change to:\n\n";
+		cout << "1. Presence" << endl;
+		cout << "2. Absence" << endl << endl;
+		cout << "Enter your choice: ";
+		try
 		{
-			cin.ignore();
-			cout << "Choose your option: ";
+			cin >> ans;
+			if (cin.fail() || (ans != 1 && ans !=2))
+			{
+				throw std::invalid_argument("Invalid input!\nPlease select number 1 or 2.");
+			}
+			if (ans == 1)
+				return 1;
+			else if (ans == 2)
+				return 0;
+		}
+		catch (const std::invalid_argument& e)
+		{
+			cout << endl << e.what() << endl;
+			cin.clear();
+			pressToContinue();
 		}
 	}
 }
@@ -601,6 +632,7 @@ void weekChange(const int& id)
 	q = query.c_str();
 
 	sendMultiQuery("Instructor's Availability Changed Successfully");
+	pressToContinue();
 }
 
 void dayChange(const int& id) 
@@ -620,6 +652,12 @@ void dayChange(const int& id)
 		q = query.c_str();
 
 		sendMultiQuery("Instructor's Availability Changed Successfully");
+		pressToContinue();
+	}
+	else
+	{
+		cout << "\nNo changes\n";
+		Sleep(1000);
 	}
 };
 
@@ -643,10 +681,23 @@ void hourChange(const int& id)
 				q = query.c_str();
 
 				sendQuery("Instructor's Availability Changed Successfully");
+				cout << "Do you want to change another hour this day? (y/n) ";
+				cin.width(1);
+				cin >> ans;
+				cinIgnore();
 			}
-			cout << "Do you want to change another hour this day? (y/n) ";
-			cin >> ans;
+			else
+			{
+				cout << "\nNo changes\n";
+				Sleep(1000);
+				ans = 'n';
+			}
 		}
+	}
+	else
+	{
+		cout << "\nNo changes\n";
+		Sleep(1000);
 	}
 };
 

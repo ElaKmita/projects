@@ -55,8 +55,7 @@ void displayMainMenu()
 void mainMenu()
 {
 	int choice = -1;
-	bool validInput = false;
-	while (!validInput)
+	while (true)
 	{
 		try
 		{
@@ -68,7 +67,6 @@ void mainMenu()
 				{
 					throw std::invalid_argument("Incorrect input. \nPlease select number from 0 to 4.");
 				}
-				validInput = true;
 				switch (choice)
 				{
 				case 0:
@@ -103,7 +101,6 @@ void mainMenu()
 					pressToContinue();
 					break;
 				}
-				validInput = false;
 			}
 		}
 		catch (const std::invalid_argument& e)
@@ -179,6 +176,54 @@ void displayMenuLesson()
 
 void lessonMenu(Lesson& lesson)
 {
+	int choice = -1;
+	bool validInput = false;
+	while (!validInput)
+	{
+		try
+		{
+			while (choice != 0)
+			{
+				displayMenuLesson();
+				cin >> choice;
+				if (cin.fail())
+				{
+					throw std::invalid_argument("Incorrect input. \nPlease select number from 0 to 3.");
+				}
+				switch (choice)
+				{
+				case 0:
+					break;
+				case 1:
+					lesson.addLesson();
+					break;
+				case 2:
+					lesson.findLesson();
+					break;
+				case 3:
+					lesson.displayAllLessons();
+					break;
+				default:
+					cout << "\nIncorrect choice.\nPlease select number from 0 to 3: \n\n";
+					pressToContinue();
+					break;
+				}
+				validInput = (choice == 0 ? true : false);
+			}
+		}
+		catch (const std::invalid_argument& e)
+		{
+			cout << endl << "ERROR: " << e.what() << endl << endl;
+			cin.clear();
+			pressToContinue();
+			choice = -1;
+		}
+	}
+}
+
+/*
+void lessonMenu(Lesson& lesson)
+{
 	char choice;
 	displayMenuLesson();
 
@@ -205,6 +250,7 @@ void lessonMenu(Lesson& lesson)
 		displayMenuLesson();
 	}
 }
+*/
 
 // MENU - Instructor
 
@@ -223,6 +269,108 @@ void displayMenuInst()
 	cout << "Choose option: ";
 }
 
+void instructorMenu(Instructor& instr)
+{
+	int choice = -1;
+	bool validInput = false;
+	while (!validInput)
+	{
+		try
+		{
+			while (choice != 0)
+			{
+				displayMenuInst();
+				cin >> choice;
+				if (cin.fail())
+				{
+					throw std::invalid_argument("Incorrect input. \nPlease select number from 0 to 7.");
+				}
+				switch (choice)
+				{
+				case 0:
+					break;
+				case 1:
+					instr.addInstructor();
+					break;
+				case 2:
+					instr.displayAll();
+					break;
+				case 3:
+					instr.findInstructor();
+					break;
+				case 4:
+					instr.modifyData();
+					break;
+				case 5:
+					instr.deleteInstructor();
+					break;
+				case 6:
+					instr.checkAvailability();
+					break;
+				case 7:
+					instr.changeAvailability();
+					break;
+				default:
+					cout << "\nIncorrect choice.\nPlease select number from 0 to 7.\n\n";
+					pressToContinue();
+					break;
+				}
+				validInput = (choice == 0 ? true : false);
+			}
+		}
+		catch (const std::invalid_argument& e)
+		{
+			cout << endl << "ERROR: " << e.what() << endl << endl;
+			cin.clear();
+			pressToContinue();
+			choice = -1;
+		}
+	}
+}
+/*
+{
+	char choice;
+	displayMenuInst();
+
+	while (cin >> choice && choice != '0')
+	{
+		cin.get();
+		switch (choice)
+		{
+		case '0':
+			break;
+		case '1':
+			instr.addInstructor();
+			break;
+		case '2':
+			instr.displayAll();
+			break;
+		case '3':
+			instr.findInstructor();
+			break;
+		case '4':
+			instr.modifyData();
+			break;
+		case '5':
+			instr.deleteInstructor();
+			break;
+		case '6':
+			instr.checkAvailability();
+			break;
+		case '7':
+			instr.changeAvailability();
+			break;
+		default:
+			cout << "\nIncorrect choice.\nPlease select number from 0 to 7.\n\n";
+			pressToContinue();
+			break;
+		}
+		displayMenuInst();
+	}
+}
+*/
+
+/*
 void instructorMenu(Instructor& instr)
 {
 	char choice;
@@ -257,15 +405,14 @@ void instructorMenu(Instructor& instr)
 			instr.changeAvailability();
 			break;
 		default:
-			cout << "\nIncorrect choice.\nPlease select number from 0 to 5.\n\n";
+			cout << "\nIncorrect choice.\nPlease select number from 0 to 7.\n\n";
 			pressToContinue();
 			break;
 		}
-	
 		displayMenuInst();
 	}
 }
-
+*/
 
 // MENU - Ski Learner
 
@@ -283,6 +430,63 @@ void displayMenuSL()
 	cout << "Choose option: ";
 }
 
+void learnerMenu(SkiLearner& skiLearner)
+{
+	int choice = -1;
+	bool validInput = false;
+	while (!validInput)
+	{
+		try
+		{
+			while (choice != 0)
+			{
+				displayMenuSL();
+				cin >> choice;
+				if (cin.fail())
+				{
+					throw std::invalid_argument("Incorrect input. \nPlease select number from 0 to 6.");
+				}
+				switch (choice)
+				{
+				case 0:
+					break;
+				case 1:
+					skiLearner.addSkiLearner();
+					break;
+				case 2:
+					skiLearner.displayAll();
+					break;
+				case 3:
+					skiLearner.findSkiLearner();
+					break;
+				case 4:
+					skiLearner.changeLevel();
+					break;
+				case 5:
+					skiLearner.modifyData();
+					break;
+				case 6:
+					skiLearner.deleteSkiLerner();
+					break;
+				default:
+					cout << "\nIncorrect choice.\nPlease select number from 0 to 6. \n\n";
+					pressToContinue();
+					break;
+				}
+				validInput = (choice == 0 ? true : false);
+			}
+		}
+		catch (const std::invalid_argument& e)
+		{
+			cout << endl << "ERROR: " << e.what() << endl << endl;
+			cin.clear();
+			pressToContinue();
+			choice = -1;
+		}
+	}
+}
+
+/*
 void learnerMenu(SkiLearner& skiLearner)
 {
 	char choice;
@@ -321,6 +525,7 @@ void learnerMenu(SkiLearner& skiLearner)
 		displayMenuSL();
 	}
 }
+*/
 
 // MENU - Additional Options
 
@@ -334,6 +539,51 @@ void displayMenuAO()		// displays menu of additional options
 	cout << "Choose option: ";
 }
 
+void AdditionalOptionsMenu()
+{
+	int choice = -1;
+	bool validInput = false;
+	while (!validInput)
+	{
+		try
+		{
+			while (choice != 0)
+			{
+				displayMenuAO();
+				cin >> choice;
+				if (cin.fail())
+				{
+					throw std::invalid_argument("Incorrect input. \nPlease select number from 0 to 2.");
+				}
+				switch (choice)
+				{
+				case 0:
+					break;
+				case 1:
+					resetWeek();			// reset all lessons and set instructor's availability to presence for the whole week
+					break;
+				case 2:
+					payment();
+					break;
+				default:
+					cout << "\nIncorrect choice.\nPlease select number from 0 to 2. \n\n";
+					pressToContinue();
+					break;
+				}
+				validInput = (choice == 0 ? true : false);
+			}
+		}
+		catch (const std::invalid_argument& e)
+		{
+			cout << endl << "ERROR: " << e.what() << endl << endl;
+			cin.clear();
+			pressToContinue();
+			choice = -1;
+		}
+	}
+}
+
+/*
 void AdditionalOptionsMenu()
 {
 	char choice;
@@ -359,6 +609,7 @@ void AdditionalOptionsMenu()
 		displayMenuAO();
 	}
 }
+*/
 
 int main()
 {
