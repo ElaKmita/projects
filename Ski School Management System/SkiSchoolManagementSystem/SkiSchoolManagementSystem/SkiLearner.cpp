@@ -9,7 +9,7 @@ using std::endl;
 
 void SkiLearner::setLevel()
 {
-	cout << "\nLevels:\n";
+	cout << "\nLevels:\n\n";
 	int i = 1;
 	for (std::string l : levels)
 	{
@@ -17,20 +17,37 @@ void SkiLearner::setLevel()
 		i++;
 	}
 	int ans;
-	cout << "\nSelect ski learner's level:  ";
-	cin >> ans;
-	while ((ans <= 0) || (ans > levels.size()))
+	bool validInput = false;
+	while (!validInput)
 	{
-		cout << "Incorrect number.\nProvide the correct number: ";
-		cin >> ans;
+		cout << "\nSelect ski learner's level:  ";
+		try
+		{
+			cin >> ans;
+			if (cin.fail())
+			{
+				throw std::invalid_argument("Invalid input!\nProvide the integer.");
+			}
+			if (ans <= 0 || ans > levels.size())
+			{
+				throw std::invalid_argument("Incorrect number.\nProvide the correct number.");
+			}
+			level = levels[ans - 1];
+			validInput = true;
+		}
+		catch (const std::invalid_argument& e)
+		{
+			cout << endl << e.what() << endl << endl;
+			cin.clear();
+			cinIgnore();
+		}
 	}
-	level = levels[ans - 1];
 	cout << endl << endl;
 }
 
 void SkiLearner::setSlope()
 {
-	cout << "\nSlopes:\n";
+	cout << "\nSlopes:\n\n";
 	int i = 1;
 	for (std::string l : slopes)
 	{
@@ -38,16 +55,35 @@ void SkiLearner::setSlope()
 		i++;
 	}
 	int ans;
-	cout << "\nSelect slope:  ";
-	cin >> ans;
-	while (ans != 1 && ans != 2)
+	bool validInput = false;
+	while (!validInput)
 	{
-		cout << "Incorrect number.\nProvide the correct number: ";
-		cin >> ans;
+		cout << "\nSelect slope:  ";
+		try
+		{
+			cin >> ans;
+			if (cin.fail())
+			{
+				throw std::invalid_argument("Invalid input!\nProvide the integer.");
+			}
+			if (ans != 1 && ans != 2)
+			{
+				throw std::invalid_argument("Incorrect number.\nProvide the number 1 or 2.");
+			}
+			slope = slopes[ans - 1];
+			validInput = true;
+		}
+		catch (const std::invalid_argument& e)
+		{
+			cout << endl << e.what() << endl << endl;
+			cin.clear();
+			cinIgnore();
+		}
 	}
-	slope = slopes[ans - 1];
 	cout << endl << endl;
 }
+
+// void SkiLearner::setSlope()	// przeciazenie, samo ustawiajacy sie stok w zaleznosci od poziomu
 
 void SkiLearner::addSkiLearner()
 {
@@ -61,11 +97,34 @@ void SkiLearner::addSkiLearner()
 	cout << "Surname: ";
 	std::getline(cin, surname);
 	capitalize(surname);
-	cout << "Phone number: ";
-	/**/
-	while (cin >> phoneNumber && strlen(phoneNumber) != 9)
+
+	bool validInput = false;
+	while (!validInput)
 	{
-		cout << "Incorrect number.\nProvide the correct phone number: ";
+		try
+		{
+			cout << "\nPhone number (e.g. 123456789): ";
+			cin.width(10);
+			cin >> phoneNumber;
+			if (phoneNumber[3] == '-')
+			{
+				throw std::invalid_argument("Invalid phone number format.\nExpected format: 123456789");
+			}
+			for (const char* ch = phoneNumber; ch < phoneNumber + 9; ch++)
+			{
+				if (!(isdigit(*ch)))
+				{
+					throw std::invalid_argument("Invalid phone number.\nNumber should consist of 9 digits.\nOther chars are not allowed.");
+				}
+			}
+			validInput = true;
+		}
+		catch (const std::invalid_argument& e)
+		{
+			cout << endl << "ERROR: " << e.what() << endl;
+			cin.clear();	// clear the error flags of the input stream
+			cinIgnore();
+		}
 	}
 	setLevel();
 	cout << "Level set as: " << level << endl << endl;
@@ -77,15 +136,7 @@ void SkiLearner::addSkiLearner()
 	query = stmt.str();				// convert to string
 	q = query.c_str();				// convert to const char *
 
-	if (mysql_query(connection, q) == 0)			// mysql_query - sends query to the database
-	{
-		cout << endl << endl << "New Ski Learner Inserted Successfully" << endl << endl << endl;
-	}
-	else 
-	{
-		cout << endl << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl << endl;
-	}
-	cin.get();
+	sendQuery("New Ski Learner Inserted Successfully");
 	pressToContinue();
 }
 
@@ -95,42 +146,54 @@ void SkiLearner::displayAll()
 	q = query.c_str();
 	mysql_query(connection, q);
 	res_set = mysql_store_result(connection);
-
-	system("CLS");
-	char ans;
-	cout << "\nDisplay views:\n\n";
-	cout << "1. Individual View\n2. Table View\n\n";
-	cout << "Select display view: ";
-	cin >> ans;
-
-	switch (ans)
-	{
-	case '1':
+	bool validInput = false;
+	while (!validInput)
 	{
 		system("CLS");
-		//cin.get();
-		cout << "\n--- SKI LEARNERS ---\n";
-		while ((row = mysql_fetch_row(res_set)) != NULL)
+		int ans;
+		cout << "\nDisplay views:\n\n";
+		cout << "1. Individual View\n2. Table View\n\n";
+		cout << "Select display view: ";
+		try
 		{
-			displayIndividualViewSL(row);
+			cin >> ans;
+			if (cin.fail())
+			{
+				throw std::invalid_argument("Incorrect input");
+			}
+			validInput = true;
+			switch (ans)
+			{
+			case 1:
+			{
+				system("CLS");
+				cout << "\n--- SKI LEARNERS ---\n";
+				while ((row = mysql_fetch_row(res_set)) != NULL)
+				{
+					displayIndividualViewSL(row);
+				}
+				pressToContinue();
+				break;
+			}
+			case 2:
+				system("CLS");
+				displayTableViewSL();
+				pressToContinue();
+				break;
+			default:
+				system("CLS");
+				displayTableViewSL();
+				pressToContinue();
+				break;
+			}
 		}
-		pressToContinue();
-		break;
+		catch (const std::invalid_argument& e)
+		{
+			cout << "\n\nError: " << e.what() << endl;
+			cin.clear();	// clear the error flags of the input stream
+			pressToContinue();
+		}
 	}
-	case '2':
-		system("CLS");
-		//cin.get();
-		displayTableViewSL();
-		pressToContinue();
-		break;
-	default:
-		system("CLS");
-		//cin.get();
-		displayTableViewSL();
-		pressToContinue();
-		break;
-	}
-	cout << endl;
 }
 
 void SkiLearner::findSkiLearner()
@@ -165,17 +228,29 @@ void SkiLearner::changeLevel()
 	cout << "\Changing ski learner's level\n\n";
 	isLearnerKnown(this);
 	cout << endl << "Enter learner id: ";
-	cin >> id;
-	system("CLS");
-	setLevel();
-	system("CLS");
-	setSlope();
+	if (cin >> id)
+	{
+		if (checkifSkiLearnerExist(id))
+		{
+			system("CLS");
+			setLevel();
+			system("CLS");
+			setSlope();
 
-	stmt.str("");
-	stmt << "UPDATE ski_learner SET level = '" << level << "', slope = '" << slope << "' WHERE id = " << id << ";";
-	query = stmt.str();
-	q = query.c_str();
-	sendQuery("Modification Successfully Completed");
+			stmt.str("");
+			stmt << "UPDATE ski_learner SET level = '" << level << "', slope = '" << slope << "' WHERE id = " << id << ";";
+			query = stmt.str();
+			q = query.c_str();
+			sendQuery("Modification Successfully Completed");
+		}
+		else
+			cout << "\n\nLearner with this id doesn't exist!\n\n";
+	}
+	else
+	{
+		cout << "\nInvalid data! Expected an integer!\n";
+		cin.clear();
+	}
 	pressToContinue();
 }
 
@@ -186,81 +261,88 @@ void SkiLearner::modifyData()
 	cout << "\nModyfying ski learner's data\n\n";
 	isLearnerKnown(this);
 	cout << endl << "Enter learner id: ";
-	cin >> id;
-	if (checkifSkiLearnerExist(id))
+	if (cin >> id)
 	{
-		learnerModificationMenu();
-		std::string column, newValue;
-		while (cin >> ans)		// ans != '0'
+		if (checkifSkiLearnerExist(id))
 		{
-			switch (ans)
-			{
-			case '0':
-				break;
-			case '1':
-			{
-				cin.get();
-				column = "name";
-				cout << "Enter new name: ";
-				std::getline(cin, newValue);
-				modificationSL(column, newValue, id);
-				break;
-			}
-			case '2':
-			{
-				cin.get();
-				column = "surname";
-				cout << "Enter new surname: ";
-				std::getline(cin, newValue);
-				modificationSL(column, newValue, id);
-				break;
-			}
-			case '3':
-			{
-				cin.get();
-				column = "phoneNumber";
-				cout << "Enter phone number: ";
-				while (cin >> phoneNumber && strlen(phoneNumber) != 9)
-				{
-					cout << "Incorrect number.\nProvide the correct phone number: ";
-				}
-				modificationSL(column, phoneNumber, id);
-				break;
-			}
-			case '4':
-			{
-				cin.get();
-				column = "level";
-				cout << "\nSet new level\n";
-				setLevel();
-				modificationSL(column, level, id);
-				break;
-			}
-			case '5':
-			{
-				cin.get();
-				column = "slope";
-				cout << "\nSet new slope\n";
-				setSlope();
-				modificationSL(column, slope, id);
-				break;
-			}
-			default:
-				cout << "Incorrect number\n\n";
-				break;
-			}
-
-			if (ans == '0')
-			{
-				cout << endl << endl;
-				break;
-			}
-
 			learnerModificationMenu();
+			std::string column, newValue;
+			while (cin >> ans)		// ans != '0'
+			{
+				switch (ans)
+				{
+				case '0':
+					break;
+				case '1':
+				{
+					cin.get();
+					column = "name";
+					cout << "Enter new name: ";
+					std::getline(cin, newValue);
+					modificationSL(column, newValue, id);
+					break;
+				}
+				case '2':
+				{
+					cin.get();
+					column = "surname";
+					cout << "Enter new surname: ";
+					std::getline(cin, newValue);
+					modificationSL(column, newValue, id);
+					break;
+				}
+				case '3':
+				{
+					cin.get();
+					column = "phoneNumber";
+					cout << "Enter phone number: ";
+					while (cin >> phoneNumber && strlen(phoneNumber) != 9)
+					{
+						cout << "Incorrect number.\nProvide the correct phone number: ";
+					}
+					modificationSL(column, phoneNumber, id);
+					break;
+				}
+				case '4':
+				{
+					cin.get();
+					column = "level";
+					cout << "\nSet new level\n";
+					setLevel();
+					modificationSL(column, level, id);
+					break;
+				}
+				case '5':
+				{
+					cin.get();
+					column = "slope";
+					cout << "\nSet new slope\n";
+					setSlope();
+					modificationSL(column, slope, id);
+					break;
+				}
+				default:
+					cout << "Incorrect number\n\n";
+					break;
+				}
+
+				if (ans == '0')
+				{
+					cout << endl << endl;
+					break;
+				}
+
+				learnerModificationMenu();
+			}
 		}
+		else
+			cout << "\n\nLearner with this id doesn't exist!\n\n";
 	}
 	else
-		cout << "\n\nLearner doesn't exist!\n\n";
+	{
+		cout << "\nInvalid data! Expected an integer!\n";
+		cin.clear();
+	}
 
 	pressToContinue();
 }
@@ -272,34 +354,39 @@ void SkiLearner::deleteSkiLerner()
 	cout << "\nRemoving ski learner from the database\n\n";
 	isLearnerKnown(this);
 	cout << endl << "Enter learner id: ";
-	cin >> id;
-	if (checkifSkiLearnerExist(id))
+	if (cin >> id)
 	{
-		cout << endl << "Are you sure that you want delete this learner? (y/n) ";
-		cin >> ans;
-		if (ans == 'y' || ans == 'Y')
+		if (checkifSkiLearnerExist(id))
 		{
-			stmt.str("");
-			stmt << "DELETE FROM ski_learner WHERE id = " << id << ";";
-			query = stmt.str();
-			q = query.c_str();
-			if (mysql_query(connection, q) == 0)			// mysql_query - sens query to the database
+			cout << endl << "Are you sure that you want delete this learner? (y/n) ";
+			cin >> ans;
+			if (ans == 'y' || ans == 'Y')
 			{
-				cout << endl << endl << "Learner Deleted Successfully" << endl << endl << endl;
+				stmt.str("");
+				stmt << "DELETE FROM ski_learner WHERE id = " << id << ";";
+				query = stmt.str();
+				q = query.c_str();
+				if (mysql_query(connection, q) == 0)			// mysql_query - sens query to the database
+				{
+					cout << endl << endl << "Learner Deleted Successfully" << endl << endl << endl;
+				}
+				else {
+					cout << endl << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl << endl;
+				}
 			}
-			else {
-				cout << endl << endl << "Entry ERROR !" << endl << "Contact Technical Team " << endl << endl << endl;
+			else
+			{
+				cout << "\nLearner has not been deleted\n\n";
 			}
 		}
 		else
-		{
-			cout << "\nLearner has not been deleted\n\n";
-		}
+			cout << "\n\nLearner with this id doesn't exist!\n\n";
 	}
 	else
-		cout << "\n\nLearner doesn't exist!\n\n";
-
-	cin.get();
+	{
+		cout << "\nInvalid data! Expected an integer!\n";
+		cin.clear();
+	}
 	pressToContinue();
 }
 
@@ -332,13 +419,17 @@ void isLearnerKnown(SkiLearner* skiLearner)
 {
 	char ans;
 	cout << "Do you know learner id? (y/n) ";
+	cin.width(1);
 	cin >> ans;
+	cinIgnore();
 	system("CLS");
 	if (ans == 'n' || ans == 'N')
 	{
 		char num;
 		cout << "\n1. Find learner\n2. Display all\n\nChoose option: ";
+		cin.width(1);
 		cin >> num;
+		cinIgnore();
 		switch (num)
 		{
 		case '1':

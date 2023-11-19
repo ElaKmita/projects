@@ -418,7 +418,9 @@ void isInstrKnown(Instructor* instr)
 {
 	char ans;
 	cout << "Do you know instructor id? (y/n) ";
+	cin.width(1);
 	cin >> ans;
+	cinIgnore();
 	system("CLS");
 	if (ans == 'n' || ans == 'N')
 	{

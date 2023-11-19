@@ -7,4 +7,6 @@ x64/
 x86/
 
 # Visual Studio 2015/2017 cache/options directory
-.vs/
+/Ski School Management System/SkiSchoolManagementSystem/.vs/
+/Ski School Management System/SkiSchoolManagementSystem/x64/
+/Ski School Management System/SkiSchoolManagementSystem/SkiSchoolManagementSystem/x64/
