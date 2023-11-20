@@ -15,7 +15,7 @@ private:
 	int id;
 	std::string name;
 	std::string surname;
-	char phoneNumber[9];
+	char phoneNumber[10];
 	std::string level;
 	std::string slope;
 	int lessons;
