@@ -1,4 +1,3 @@
 Ski School Management System/SkiSchoolManagementSystem/.vs/
 Ski School Management System/SkiSchoolManagementSystem/x64/
-D:\GIT - priv\projects\Ski School Management System\SkiSchoolManagementSystem\SkiSchoolManagementSystem
 Ski School Management System/SkiSchoolManagementSystem/SkiSchoolManagementSystem/x64/
