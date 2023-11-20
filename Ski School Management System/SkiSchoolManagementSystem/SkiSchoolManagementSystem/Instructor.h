@@ -28,7 +28,6 @@ public:
 	void findInstructor();			// finds instructor in the database
 	void modifyData();				// modifies instructor's data
 	void deleteInstructor();		// deletes instructor from database
-	// void countPZNInstructors;	// counts instructors with PNZ title
 	void checkAvailability();
 	void changeAvailability();		// changes instructor's availability
 };

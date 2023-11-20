@@ -71,37 +71,34 @@ void payment()
 		paymentMenu();
 		try
 		{
-			while (ans != 0)
+			cin >> ans;
+			if (cin.fail())
 			{
-				cin >> ans;
-				if (cin.fail())
-				{
-					throw std::invalid_argument("Incorrect input.\n Select number from 0 to 2");
-				}
-				if (ans < 0 || ans > 2)
-				{
-					throw "Incorrect input. Select number from 0 to 2.";
-				}
-				switch (ans)
-				{
-				case 0:
-					break;
-				case 1:
-				{
-					payAll();
-					break;
-				}
-				case 2:
-				{
-					singlePay();
-					break;
-				}
-				default:
-					cout << "Incorrect input. Select number from 0 to 2";
-					pressToContinue();
-				}
-				validInput = (ans >= 0 && ans <= 2) ? true : false;
+				throw std::invalid_argument("Incorrect input.\nSelect number from 0 to 2.");
 			}
+			if (ans < 0 || ans > 2)
+			{
+				throw "Incorrect input. Select number from 0 to 2.";
+			}
+			switch (ans)
+			{
+			case 0:
+				break;
+			case 1:
+			{
+				payAll();
+				break;
+			}
+			case 2:
+			{
+				singlePay();
+				break;
+			}
+			default:
+				cout << "Incorrect input. Select number from 0 to 2";
+				pressToContinue();
+			}
+			validInput = (ans >= 0 && ans <= 2) ? true : false;
 		}
 		catch (const std::invalid_argument& e)
 		{
@@ -119,35 +116,6 @@ void payment()
 		}
 	}
 }
-
-/*
-void payment()
-{
-	char ans;
-	paymentMenu();
-	while (cin >> ans && ans != '0')
-	{
-		switch (ans)
-		{
-		case '0':
-			break;
-		case '1':
-		{
-			payAll();
-			break;
-		}
-		case '2':
-		{
-			singlePay();
-			break;
-		}
-		default:
-			cout << "\nIncorrect input. Select number from 0 to 2: ";
-		}
-		paymentMenu();
-	}
-}
-*/
 
 void payAll()
 {
@@ -172,21 +140,36 @@ void singlePay()
 	int id;
 	char ans;
 	cout << endl << endl << "Enter instructor id: ";
-	cin >> id;
-	// check if instructor exist
-	cout << endl << endl << "Would you like to confirm the withdrawal? (y/n) ";
-	cin >> ans;
-	if (ans == 'y' || ans == 'Y')
+	if (cin >> id)
 	{
-		stmt.str("");
-		stmt << "UPDATE instructor SET salary = 0 WHERE id = " << id << " ;";
-		query = stmt.str();
-		q = query.c_str();
-		sendQuery("Withdrawal Confirmed - Salary Updated Successfully");
+		if (checkifSkiInstructorExist(id))
+		{
+			cout << endl << endl << "Would you like to confirm the withdrawal? (y/n) ";
+			cin >> ans;
+			if (ans == 'y' || ans == 'Y')
+			{
+				stmt.str("");
+				stmt << "UPDATE instructor SET salary = 0 WHERE id = " << id << " ;";
+				query = stmt.str();
+				q = query.c_str();
+				sendQuery("Withdrawal Confirmed - Salary Updated Successfully");
+			}
+			else
+			{
+				cout << endl << endl << "Salary Not Changed\n\n";
+			}
+			pressToContinue();
+		}
+		else
+		{
+			cout << "\nInstructor with this id doesn't exist!\n\n";
+			pressToContinue();
+		}
 	}
 	else
 	{
-		cout << endl << endl << "Salary Not Changed\n\n";
+		cout << "\nInvalid data! Expected an integer!\n";
+		cin.clear();
+		pressToContinue();
 	}
-	pressToContinue();
 }

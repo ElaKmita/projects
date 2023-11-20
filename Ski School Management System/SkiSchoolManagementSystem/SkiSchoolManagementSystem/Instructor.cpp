@@ -397,7 +397,7 @@ void displayTableView()				// displays instructors' data in table view
 	cout << "\n\t\t\t\t\t" << "--- INSTRUCTORS--- \n\n";		// << std::setw(54)
 	cout << "\t" << std::left << std::setw(8) << "Id" << std::setw(20) << "Name" << std::setw(20) << "Surname" << std::setw(20) << "Displayed name" << std::setw(10) << "Title" << std::setw(8) << "h" << std::setw(8) << "PLN" << endl << endl;
 	while ((row = mysql_fetch_row(res_set)) != NULL)
-	{ 
+	{
 		cout << "\t" << std::left << std::setw(8) << row[0] << std::setw(20) << row[1] << std::setw(20) << row[2] << std::setw(20) << row[3] << std::setw(10) << row[4] << std::setw(8) << row[6] << std::setw(8) << row[7];
 		cout << endl;
 	}
@@ -418,7 +418,9 @@ void isInstrKnown(Instructor* instr)
 {
 	char ans;
 	cout << "Do you know instructor id? (y/n) ";
+	cin.width(1);
 	cin >> ans;
+	cinIgnore();
 	system("CLS");
 	if (ans == 'n' || ans == 'N')
 	{
@@ -504,7 +506,7 @@ void showAvailability(const int& id)
 		cout << "\n\nInstructor: " << row[0] << "\n\n\n";
 
 		cout << std::left << std::setw(10) << "DAY" << std::setw(5) << "8AM" << std::setw(5) << "9AM" << std::setw(5) << "10AM" << std::setw(5) << "11AM" << std::setw(5) << "12PM" << std::setw(5) << "13PM" << std::setw(5) << "14PM" << std::setw(5) << "15PM" << endl << endl;
-		
+
 		for (std::string d : daysOfWeek)
 		{
 			stmt.str("");
@@ -601,7 +603,7 @@ bool attendanceMenu()
 		try
 		{
 			cin >> ans;
-			if (cin.fail() || (ans != 1 && ans !=2))
+			if (cin.fail() || (ans != 1 && ans != 2))
 			{
 				throw std::invalid_argument("Invalid input!\nPlease select number 1 or 2.");
 			}
@@ -635,7 +637,7 @@ void weekChange(const int& id)
 	pressToContinue();
 }
 
-void dayChange(const int& id) 
+void dayChange(const int& id)
 {
 	bool attendance;
 	int choice = daysMenu();
@@ -661,11 +663,11 @@ void dayChange(const int& id)
 	}
 };
 
-void hourChange(const int& id) 
+void hourChange(const int& id)
 {
 	int choiceDay = daysMenu();
 	if (choiceDay != 0)
-	{	
+	{
 		char ans = 'y';
 		bool attendance;
 		while (ans == 'y')

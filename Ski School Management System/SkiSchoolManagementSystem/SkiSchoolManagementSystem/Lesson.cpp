@@ -43,99 +43,106 @@ void Lesson::addLesson()
 	isLearnerKnown(&learner);
 	system("CLS");
 	cout << "Insert client Id: ";
-	cin >> skiLearnerId;
-	if (checkifSkiLearnerExist(skiLearnerId))
+	if (cin >> skiLearnerId)
 	{
-		cout << endl << "Insert the number of learners: ";
-		while (!(cin >> learnersNum) || learnersNum <= 0 || learnersNum > 8)
+		if (checkifSkiLearnerExist(skiLearnerId))
 		{
-			if (learnersNum <= 0)
-				cout << "Minimum 1 learner is required" << endl;
-			else if (learnersNum > 8)
-				cout << "Up to 8 learners are available" << endl;
-			else
-				cout << "Incorrect data" << endl;
-
 			cout << endl << "Insert the number of learners: ";
-		}
+			while (!(cin >> learnersNum) || learnersNum <= 0 || learnersNum > 8)
+			{
+				if (learnersNum <= 0)
+					cout << "Minimum 1 learner is required" << endl;
+				else if (learnersNum > 8)
+					cout << "Up to 8 learners are available" << endl;
+				else
+					cout << "Incorrect data" << endl;
 
-		cout << endl << "Insert the number of hours: ";
-		while (!(cin >> hoursNum) || hoursNum <= 0 || hoursNum > 4)
-		{
-			if (hoursNum <= 0)
-				cout << "Minimum 1 hour is required" << endl;
-			else if (hoursNum > 4)
-				cout << "Up to 4 hours are available" << endl;
-			else
-				cout << "Incorrect data" << endl;
+				cout << endl << "Insert the number of learners: ";
+			}
 
 			cout << endl << "Insert the number of hours: ";
-		}
-		day = daysOfWeek[chooseDay() - 1];
-
-		int hourIdx = chooseHour(hoursNum) - 1;
-		hour = workingHours[hourIdx];
-
-		std::vector<int> idList;		// list of IDs that meet requirement of availability
-		std::vector<std::string> nameList;
-		findAvailableInst(day, hourIdx, hoursNum, idList, nameList);
-
-		cout << "Insert instructor id: ";
-		cin >> instructorId;
-		bool correctID = false;
-		std::string instructorName;
-		int idx = 0;
-		for (int i : idList)
-		{
-			if (i == instructorId)
+			while (!(cin >> hoursNum) || hoursNum <= 0 || hoursNum > 4)
 			{
-				correctID = true;
-				instructorName = nameList[idx];
-				break;
-			}
-			idx++;
-		}
-	
-		if (correctID)
-		{
-			system("CLS");
-			cout << "\n\t- RESERVATION -\n\n";
-			price = getPrice(learnersNum, hoursNum) * hoursNum * learnersNum;
-			cout << "Day:\t\t\t" << day << endl;
-			cout << "Hour\t\t\t" << hour << endl;
-			cout << "Instructor:\t\t" << instructorName << endl;
-			cout << "Number of hours:\t" << hoursNum << endl;
-			cout << "Number of learners:\t" << learnersNum << endl;
-			cout << "Price:\t\t\t" << price << " PLN" << endl;
-			char ans;
-			cout << "\nDo you confirm the reservation? (y/n) ";
-			cin >> ans;
-			if (ans == 'y' || ans == 'Y')
-			{ 
-				stmt.str("");
-				stmt << "INSERT INTO lesson(skiLearnerId, instructorId, day, hour, numOflearners, numOfHours, price) VALUES(" << skiLearnerId << " , " << instructorId << ",'" << day << "','" << hour << "', " << learnersNum << " , " << hoursNum << " , " << price <<  ");";
-				query = stmt.str();				
-				q = query.c_str();				
+				if (hoursNum <= 0)
+					cout << "Minimum 1 hour is required" << endl;
+				else if (hoursNum > 4)
+					cout << "Up to 4 hours are available" << endl;
+				else
+					cout << "Incorrect data" << endl;
 
-				bool properlyConnected;		// check if query is correctly connected with database
-				sendQuery("New Lesson Successfully Added", properlyConnected);
-				
-				if (properlyConnected)
-					updateData(instructorId, skiLearnerId, day, hourIdx, hoursNum, price);
+				cout << endl << "Insert the number of hours: ";
+			}
+			day = daysOfWeek[chooseDay() - 1];
+
+			int hourIdx = chooseHour(hoursNum) - 1;
+			hour = workingHours[hourIdx];
+
+			std::vector<int> idList;		// list of IDs that meet requirement of availability
+			std::vector<std::string> nameList;
+			findAvailableInst(day, hourIdx, hoursNum, idList, nameList);
+
+			cout << "Insert instructor id: ";
+			cin >> instructorId;
+			bool correctID = false;
+			std::string instructorName;
+			int idx = 0;
+			for (int i : idList)
+			{
+				if (i == instructorId)
+				{
+					correctID = true;
+					instructorName = nameList[idx];
+					break;
+				}
+				idx++;
+			}
+
+			if (correctID)
+			{
+				system("CLS");
+				cout << "\n\t- RESERVATION -\n\n";
+				price = getPrice(learnersNum, hoursNum) * hoursNum * learnersNum;
+				cout << "Day:\t\t\t" << day << endl;
+				cout << "Hour\t\t\t" << hour << endl;
+				cout << "Instructor:\t\t" << instructorName << endl;
+				cout << "Number of hours:\t" << hoursNum << endl;
+				cout << "Number of learners:\t" << learnersNum << endl;
+				cout << "Price:\t\t\t" << price << " PLN" << endl;
+				char ans;
+				cout << "\nDo you confirm the reservation? (y/n) ";
+				cin >> ans;
+				if (ans == 'y' || ans == 'Y')
+				{
+					stmt.str("");
+					stmt << "INSERT INTO lesson(skiLearnerId, instructorId, day, hour, numOflearners, numOfHours, price) VALUES(" << skiLearnerId << " , " << instructorId << ",'" << day << "','" << hour << "', " << learnersNum << " , " << hoursNum << " , " << price << ");";
+					query = stmt.str();
+					q = query.c_str();
+
+					bool properlyConnected;		// check if query is correctly connected with database
+					sendQuery("New Lesson Successfully Added", properlyConnected);
+
+					if (properlyConnected)
+						updateData(instructorId, skiLearnerId, day, hourIdx, hoursNum, price);
+				}
+				else
+				{
+					cout << endl << "Reservation Canceled\n\n";
+				}
 			}
 			else
 			{
-				cout << endl << "Reservation Canceled\n\n";
+				cout << "\n\nIncorrect instructor Id \nThis instructor is not available in the provided hours.\n\n";
 			}
 		}
 		else
 		{
-			cout << "\n\nIncorrect instructor Id \nThis instructor is not available in the provided hours.\n\n";
+			cout << "\n\nIncorrect ski learner Id! \n\n";
 		}
 	}
 	else
 	{
-		cout << "\n\nIncorrect ski learner Id! \n\n";
+		cout << "\nInvalid data! Expected an integer!\n";
+		cin.clear();
 	}
 	pressToContinue();
 }
@@ -200,7 +207,7 @@ void Lesson::findLesson()				// find the lesson by phone number or surname
 void Lesson::displayAllLessons()		// display all lessons on a specific day
 {
 	int dayIdx = chooseDay() - 1;
-	
+
 	stmt.str("");
 
 	stmt << "SELECT l.id, sl.name, sl.surname, sl.phoneNumber, l.hour, l.numOfHours, l.numOfLearners, i.displayedName, sl.level, sl.slope"
@@ -211,9 +218,9 @@ void Lesson::displayAllLessons()		// display all lessons on a specific day
 	q = query.c_str();
 	mysql_query(connection, q);
 	res_set = mysql_store_result(connection);
-	
+
 	system("CLS");
-	cout << "\n\t\t\t\t\t" << "--- " << daysOfWeek[dayIdx] << "'s lessons --- \n\n";		
+	cout << "\n\t\t\t\t\t" << "--- " << daysOfWeek[dayIdx] << "'s lessons --- \n\n";
 	cout << std::left << std::setw(4) << "Id" << std::setw(12) << "Name" << std::setw(12) << "Surname" << std::setw(12) << "Phone Num" << std::setw(6) << "Hour" << std::setw(7) << "hours" << std::setw(9) << "people" << std::setw(15) << "Disp Name" << std::setw(30) << "level" << std::setw(20) << "slope" << endl << endl;
 	bool noItems = true;
 	while ((row = mysql_fetch_row(res_set)) != NULL)
@@ -290,7 +297,7 @@ int chooseDay()							// returns value from the menu (counting from 1)
 			cin >> ans;
 			if (cin.fail() || ans < 1 || ans > 7)
 			{
-				throw "Incorrect input. Please select the proper number.";	
+				throw "Incorrect input. Please select the proper number.";
 			}
 			validInput = true;
 		}

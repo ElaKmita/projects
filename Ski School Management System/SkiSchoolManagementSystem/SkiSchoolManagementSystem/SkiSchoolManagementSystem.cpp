@@ -113,54 +113,6 @@ void mainMenu()
 	}
 }
 
-/*
-void mainMenu()
-{
-	char choice;
-	displayMainMenu();
-
-	while (cin >> choice && choice != '0')
-	{
-		cin.get();
-		switch (choice)
-		{
-		case '0':
-			cout << "\n\nGoodbye!\n\n";
-			exit(0);
-			break;
-		case '1':
-		{
-			Lesson l;
-			lessonMenu(l);
-			break;
-		}
-		case '2':
-		{
-			Instructor i;
-			instructorMenu(i);
-			break;
-		}
-		case '3':
-		{
-			SkiLearner sl;
-			learnerMenu(sl);
-			break;
-		}
-		case '4':
-		{
-			AdditionalOptionsMenu();
-			break;
-		}
-		default:
-			cout << "\nIncorrect choice.\nPlease select number from 0 to 5.\n\n";
-			break;
-		}
-
-		displayMainMenu();
-	}
-}
-*/
-
 // MENU - Lesson
 
 void displayMenuLesson()
@@ -220,37 +172,6 @@ void lessonMenu(Lesson& lesson)
 		}
 	}
 }
-
-/*
-void lessonMenu(Lesson& lesson)
-{
-	char choice;
-	displayMenuLesson();
-
-	while (cin >> choice && choice != '0')
-	{
-		cin.get();
-		switch (choice)
-		{
-		case '0':
-			break;
-		case '1':
-			lesson.addLesson();
-			break;
-		case '2':
-			lesson.findLesson();
-			break;
-		case '3':
-			lesson.displayAllLessons();
-			break;
-		default:
-			cout << "\nIncorrect choice.\nPlease select number from 0 to 3: \n\n";
-			break;
-		}
-		displayMenuLesson();
-	}
-}
-*/
 
 // MENU - Instructor
 
@@ -327,92 +248,6 @@ void instructorMenu(Instructor& instr)
 		}
 	}
 }
-/*
-{
-	char choice;
-	displayMenuInst();
-
-	while (cin >> choice && choice != '0')
-	{
-		cin.get();
-		switch (choice)
-		{
-		case '0':
-			break;
-		case '1':
-			instr.addInstructor();
-			break;
-		case '2':
-			instr.displayAll();
-			break;
-		case '3':
-			instr.findInstructor();
-			break;
-		case '4':
-			instr.modifyData();
-			break;
-		case '5':
-			instr.deleteInstructor();
-			break;
-		case '6':
-			instr.checkAvailability();
-			break;
-		case '7':
-			instr.changeAvailability();
-			break;
-		default:
-			cout << "\nIncorrect choice.\nPlease select number from 0 to 7.\n\n";
-			pressToContinue();
-			break;
-		}
-		displayMenuInst();
-	}
-}
-*/
-
-/*
-void instructorMenu(Instructor& instr)
-{
-	char choice;
-	displayMenuInst();
-
-	while (cin >> choice && choice != '0')
-	{
-		cin.get();
-		switch (choice)
-		{
-		case '0':
-			break;
-		case '1':
-			instr.addInstructor();
-			break;
-		case '2':
-			instr.displayAll();
-			break;
-		case '3':
-			instr.findInstructor();
-			break;
-		case '4':
-			instr.modifyData();
-			break;
-		case '5':
-			instr.deleteInstructor();
-			break;
-		case '6':
-			instr.checkAvailability();
-			break;
-		case '7':
-			instr.changeAvailability();
-			break;
-		default:
-			cout << "\nIncorrect choice.\nPlease select number from 0 to 7.\n\n";
-			pressToContinue();
-			break;
-		}
-		displayMenuInst();
-	}
-}
-*/
 
 // MENU - Ski Learner
 
@@ -486,47 +321,6 @@ void learnerMenu(SkiLearner& skiLearner)
 	}
 }
 
-/*
-void learnerMenu(SkiLearner& skiLearner)
-{
-	char choice;
-	displayMenuSL();
-
-	while (cin >> choice && choice != '0')
-	{
-		cin.get();
-		switch (choice)
-		{
-		case '0':
-			break;
-		case '1':
-			skiLearner.addSkiLearner();
-			break;
-		case '2':
-			skiLearner.displayAll();
-			break;
-		case '3':
-			skiLearner.findSkiLearner();
-			break;
-		case '4':
-			skiLearner.changeLevel();
-			break;
-		case '5':
-			skiLearner.modifyData();
-			break;
-		case '6':
-			skiLearner.deleteSkiLerner();
-			break;
-		default:
-			cout << "\nIncorrect choice.\nPlease select number from 0 to 5: \n\n";
-			break;
-		}
-
-		displayMenuSL();
-	}
-}
-*/
-
 // MENU - Additional Options
 
 void displayMenuAO()		// displays menu of additional options
@@ -583,34 +377,6 @@ void AdditionalOptionsMenu()
 	}
 }
 
-/*
-void AdditionalOptionsMenu()
-{
-	char choice;
-	displayMenuAO();
-
-	while (cin >> choice && choice != '0')
-	{
-		cin.get();
-		switch (choice)
-		{
-		case '0':
-			break;
-		case '1':
-			resetWeek();			// reset all lessons and set instructor's availability to presence for the whole week
-			break;
-		case '2':
-			payment();
-			break;
-		default:
-			cout << "\nIncorrect choice.\nPlease select number from 0 to 3: \n\n";
-			break;
-		}
-		displayMenuAO();
-	}
-}
-*/
-
 int main()
 {
 	// connection initialization
@@ -628,17 +394,5 @@ int main()
 	*/
 
 	mainMenu();
-	//Instructor i;
-	//instructorMenu(i);
-	//i.addInstructor();
-	//i.displayAll();
-	//i.deleteInstructor();
-	//i.findInstructor();
-	//i.modifyData();
-	//SkiLearner s;
-	//learnerMenu(s);
-
-	//Lesson l;
-	//l.addLesson();
 }
 
