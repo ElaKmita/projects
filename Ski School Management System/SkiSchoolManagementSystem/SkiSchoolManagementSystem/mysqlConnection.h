@@ -7,10 +7,9 @@
 
 #define HOST "127.0.0.1"
 #define USER "root"
-#define PASS "2_KLZBRMQ1_pass" /*put the password of MySQL in here between ""*/
-#define DATABASE "skischool"
+#define PASS /*put the password of MySQL in here between ""*/
+#define DATABASE "skischool"	/*put the name of database in here between ""*/
 #define PORT 3306
-//#define PASSWORD 1234 /*Set a Numeric Password for Your Application
 
 // MYSQL - declaration 
 
