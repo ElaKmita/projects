@@ -147,6 +147,7 @@
     <ClCompile Include="additionalOptions.cpp" />
     <ClCompile Include="Instructor.cpp" />
     <ClCompile Include="Lesson.cpp" />
+    <ClCompile Include="menu.cpp" />
     <ClCompile Include="SkiLearner.cpp" />
     <ClCompile Include="SkiSchoolManagementSystem.cpp" />
     <ClCompile Include="additionalFunctions.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="additionalOptions.h" />
     <ClInclude Include="Instructor.h" />
     <ClInclude Include="Lesson.h" />
+    <ClInclude Include="menu.h" />
     <ClInclude Include="mysqlConnection.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SkiLearner.h" />
