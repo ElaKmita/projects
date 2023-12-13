@@ -13,6 +13,11 @@
 
 ## General Info
 The aim of this project is to create console application, that simulates functioning of the Ski School Management System.
+
+The example program fragments are shown below: <br> <br>
+<img src=".\SkiSchoolManagementSystem\Graphics\mainMenu.png" width=400/>
+<img src=".\SkiSchoolManagementSystem\Graphics\dispInstructors.png" width=400/>
+
 <br><br>
 
 ## Technologies

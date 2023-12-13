@@ -1,4 +1,4 @@
-# Project Repository
+# Projects Repository
 
 This repository contains 2 projects:
 
