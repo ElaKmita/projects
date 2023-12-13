@@ -8,6 +8,8 @@ class Unicorn
 private:
     const int cellX = 5;        // 5th cell on x axis
     const int cellY = 10;       // 10th cell on y axin
+    const int initialDirection = 2;
+    const int initialAcceleration = 1;
 
 public:
     Texture2D textureDown, textureUp;
@@ -16,7 +18,7 @@ public:
     float acceleration;
 
     Unicorn();                  // consructor - set initial values
-    ~Unicorn();                 // destructor
+    ~Unicorn();                 
 
     void draw();                // draw Unicorn
     void update();              // update causes simulation of the movement

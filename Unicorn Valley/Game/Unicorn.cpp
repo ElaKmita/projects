@@ -2,12 +2,11 @@
 
 Unicorn::Unicorn()
 {
-    textureDown = LoadTexture(".\\Graphics\\unicorn_down.png");
-    textureUp = LoadTexture(".\\Graphics\\unicorn_up.png");
-    direction = 2;
-    acceleration = 1;
-    //position = { 0, 0 };
-    position = { (float)cellX * cellSize, (float)cellY * cellSize };
+    textureDown = LoadTexture(".\\Graphics\\unicorn_down.png");         // load image of unicorn flying down
+    textureUp = LoadTexture(".\\Graphics\\unicorn_up.png");             // load image of unicorn flying up
+    direction = initialDirection;                                       // number of cells by which the unicorn moves in the Y-axis
+    acceleration = initialAcceleration;                                                   
+    position = { (float)cellX * cellSize, (float)cellY * cellSize };    // start position for the unicorn
 }
 
 Unicorn::~Unicorn()
@@ -18,26 +17,25 @@ Unicorn::~Unicorn()
 
 void Unicorn::draw()
 {
-    if (direction >= 0)
+    if (direction >= 0)     // unicorn is moving down - use textureDown
     {
         DrawTexture(textureDown, position.x, position.y, WHITE);
     }
-    else
+    else                    // unicorn is moving up - use textureUp
     {
         DrawTexture(textureUp, position.x, position.y, WHITE);
     }
-    //DrawRectangle(position.x, position.y, cellSize, cellSize, BLACK);
 }
 
 void Unicorn::update()
 {
-    position.y += direction * acceleration;
-    acceleration *= 1.01;
+    position.y += direction * acceleration;     // change position of the unicorn
+    acceleration *= 1.01;                       // increase acceleration 
 }
 
-void Unicorn::reset()
+void Unicorn::reset()                           // reset to initial values
 {
-    direction = 2;
-    acceleration = 1;
+    direction = initialDirection;
+    acceleration = initialAcceleration;
     position = { (float)cellX * cellSize, (float)cellY * cellSize };
 }
