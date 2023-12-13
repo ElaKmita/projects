@@ -21,18 +21,18 @@ public:
     Game();
     ~Game();
 
-    void keyPressed(int direction);
-    void GameOver();
+    void keyPressed(int direction);                 // detect and react if key is pressed
+    void gameOver();                    
     void checkCollisionWithEdges();
     void checkCollisionWithObstacles(Obstacle* obstacle);
     void checkCollisionWithFood(Food* food, int& tableElement);
     void resetObstacle();
-    void resetFood();
+    void resetFood();                             
     void createNewObstacle();
-    void deleteVanishedObstacle();
+    void deleteVanishedObstacle();                  // delete obstacle if vanishes from the window
     void createNewFood();
-    void deleteVanishedRainbow();
-    void deleteRainbow(Food* rainbow, int& tableElement);
-    void addPoint(Obstacle* obstacle);
+    void deleteVanishedFood();                      // delete food if disappears from the window
+    void deleteFood(Food* food, int& tableElement); // delete food if is eaten by the unicorn
+    void addPoint(Obstacle* obstacle);             
     void setLevel(int score);
 };

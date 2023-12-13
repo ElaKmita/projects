@@ -2,13 +2,13 @@
 
 Game::Game()
 {
-    textureCake = LoadTexture(".\\Graphics\\cake.png");
-    textureLollipop = LoadTexture(".\\Graphics\\lollipop.png");
-    spacePressed = true;
+    textureCake = LoadTexture(".\\Graphics\\cake.png");             // load image of cake
+    textureLollipop = LoadTexture(".\\Graphics\\lollipop.png");     // load image of lollipop
+    spacePressed = true;                                            
     score = 0;
     running = true;
-    initialVariables();
-    level = 0;
+    initializeVariables();      
+    level = 0;                  
 }
 
 Game::~Game()
@@ -19,18 +19,18 @@ Game::~Game()
 
 void Game::keyPressed(int direction)
 {
-    unicorn.direction = direction;
-    unicorn.acceleration = 1;
-    running = true;            // game is running again if user press KEY
+    unicorn.direction = direction;  // set direction of the unicorn's flight 
+    unicorn.acceleration = 1;       // set initial acceleration
+    running = true;                 // game is running again if user press KEY
 }
 
-void Game::GameOver()
+void Game::gameOver()
 {
-    spacePressed = false;
+    spacePressed = false;           
     unicorn.reset();
     resetObstacle();
     resetFood();
-    initialVariables();
+    initializeVariables();
     level = 0;
 }
 
@@ -38,7 +38,7 @@ void Game::checkCollisionWithEdges()
 {
     if (unicorn.position.y + unicornSize >= windowHeight || unicorn.position.y <= 0)
     {
-        GameOver();
+        gameOver();
         running = false;
     }
 }
@@ -49,7 +49,7 @@ void Game::checkCollisionWithObstacles(Obstacle* obstacle)
     {
         if (unicorn.position.y <= obstacle->positionUpper.y || unicorn.position.y >= obstacle->positionLower.y - unicornSize)
         {
-            GameOver();
+            gameOver();
             running = false;
             return;
         }
@@ -88,7 +88,7 @@ void Game::checkCollisionWithFood(Food* food, int& tableElement)
     {
         if ((unicornTop <= foodBottom && unicornTop >= foodTop) || (unicornBottom <= foodBottom && unicornBottom >= foodTop) || (unicornBottom <= foodTop && unicornBottom >= foodBottom) || (unicornTop <= foodTop && unicornTop >= foodBottom))
         {
-            deleteRainbow(food, tableElement);
+            deleteFood(food, tableElement);
             score += points;
             setLevel(score);
         }
@@ -157,7 +157,7 @@ void Game::createNewFood()
     }
 }
 
-void Game::deleteVanishedRainbow()
+void Game::deleteVanishedFood()
 {
     if ((foods[0]->position.x) <= 0)
     {
@@ -166,7 +166,7 @@ void Game::deleteVanishedRainbow()
     }
 }
 
-void Game::deleteRainbow(Food* rainbow, int& tableElement)
+void Game::deleteFood(Food* rainbow, int& tableElement)
 {
     delete rainbow;
     foods.erase(foods.begin() + tableElement);

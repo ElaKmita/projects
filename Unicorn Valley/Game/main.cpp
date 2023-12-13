@@ -2,22 +2,9 @@
 #include <raylib.h>
 #include <vector>
 
-#include "ProjectVariables.h"
-#include "Unicorn.h"
-#include "Obstacle.h"
-#include "Food.h"
 #include "Game.h"
 
-bool eventTriggered(double interval)
-{
-    double currentTime = GetTime();
-    if (currentTime - lastUpdateTime >= interval)
-    {
-        lastUpdateTime = currentTime;
-        return true;
-    }
-    return false;
-}
+bool eventTriggered(double interval);
 
 int main()
 {
@@ -82,7 +69,7 @@ int main()
                     }
                     if (!game.foods.empty())
                     {
-                        game.deleteVanishedRainbow();
+                        game.deleteVanishedFood();
                     }
                     game.checkCollisionWithEdges();
                 }
@@ -108,3 +95,13 @@ int main()
     return 0;
 }
 
+bool eventTriggered(double interval)
+{
+    double currentTime = GetTime();
+    if (currentTime - lastUpdateTime >= interval)
+    {
+        lastUpdateTime = currentTime;
+        return true;
+    }
+    return false;
+}
